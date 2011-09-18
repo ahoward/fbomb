@@ -31,13 +31,11 @@ Gem::Specification::new do |spec|
   spec.test_files = nil
 
   
-    spec.add_dependency(*["tinder", "~> 1.4.3"])
+    spec.add_dependency(*["tinder", "~> 1.7.0"])
   
     spec.add_dependency(*["main", "~> 4.7.6"])
   
     spec.add_dependency(*["fukung", "~> 1.1.0"])
-  
-    spec.add_dependency(*["twitter-stream", "~> 0.1.14"])
   
     spec.add_dependency(*["yajl-ruby", "~> 0.8.3"])
   
