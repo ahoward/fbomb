@@ -16,5 +16,5 @@ USAGE
   3) devestate your campfire room
     ./bin/fbomb run
 
-CUSOMIZE
+CUSTOMIZE
   see lib/fbomb/commands/*
