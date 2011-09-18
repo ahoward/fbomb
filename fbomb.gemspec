@@ -9,9 +9,22 @@ Gem::Specification::new do |spec|
   spec.description = "description: fbomb kicks the ass"
 
   spec.files =
-["Rakefile", "fbomb.gemspec", "lib", "lib/fbomb.rb"]
+["README",
+ "Rakefile",
+ "bin",
+ "bin/fbomb",
+ "fbomb.gemspec",
+ "lib",
+ "lib/fbomb",
+ "lib/fbomb.rb",
+ "lib/fbomb/campfire.rb",
+ "lib/fbomb/command.rb",
+ "lib/fbomb/commands",
+ "lib/fbomb/commands/builtin.rb",
+ "lib/fbomb/commands/system.rb",
+ "lib/fbomb/util.rb"]
 
-  spec.executables = []
+  spec.executables = ["fbomb"]
   
   spec.require_path = "lib"
 
@@ -20,7 +33,13 @@ Gem::Specification::new do |spec|
   
     spec.add_dependency(*["tinder", "~> 1.4.3"])
   
-    spec.add_dependency(*["main", "~> 4.7.3"])
+    spec.add_dependency(*["main", "~> 4.7.6"])
+  
+    spec.add_dependency(*["fukung", "~> 1.1.0"])
+  
+    spec.add_dependency(*["twitter-stream", "~> 0.1.14"])
+  
+    spec.add_dependency(*["yajl-ruby", "~> 0.8.3"])
   
 
   spec.extensions.push(*[])

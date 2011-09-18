@@ -13,7 +13,7 @@ USAGE
     ./bin/fbomb /chucknorris
     ./bin/fbomb /fukung canada
 
-  3) devestate your campfire room
+  3) devastate your campfire room
     ./bin/fbomb run
 
 CUSTOMIZE
