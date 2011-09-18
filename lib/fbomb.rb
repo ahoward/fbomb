@@ -18,7 +18,7 @@
     def dependencies
       {
         'tinder'              =>  [ 'tinder'         , '~> 1.7.0'  ]  , 
-        'yajl'                =>  [ 'yajl-ruby'      , '~> 0.8.3'  ]  , 
+        'yajl'                =>  [ 'yajl-ruby'      , '~> 1.0.0'  ]  , 
         'fukung'              =>  [ 'fukung'         , '~> 1.1.0'  ]  , 
         'main'                =>  [ 'main'           , '~> 4.7.6'  ] 
       }
