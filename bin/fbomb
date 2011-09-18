@@ -1,0 +1,109 @@
+#! /usr/bin/env ruby
+
+Main {
+##
+#
+  edit_config_file! <<-__
+    campfire:
+      domain: YOUR_CAMPFIRE_DOMAIN
+      token: YOUR_CAMPFIRE_API_TOKEN
+      room: YOUR_CAMPFIRE_ROOM_NAME
+
+    commands:
+      - system
+      - builtin
+  __
+
+##
+#
+  def run
+    load_commands!
+  end
+
+  def load_commands!
+    @commands = FBomb::Command.load(config[:commands])
+    run_command! if argv.first =~ %r|^/| unless argv.empty?
+  end
+
+  def run_command!
+    path, args = argv
+    commands = FBomb::Command.table
+    command = commands[path] or abort("no such command #{ path }")
+    command.call(*args)
+    exit
+  end
+
+##
+#
+  mode(:run) do
+    def run
+      load_commands!
+      drop_fbombs!
+    end
+
+    def drop_fbombs!
+      domain, token, room = config[:campfire].slice(:domain, :token, :room).values
+      campfire = FBomb::Campfire.new(domain, :token => token)
+      room = campfire.room_for(room)
+      room.join
+      id = room.id
+
+      FBomb::Command.room = room
+      url = URI.parse("http://#{ token }:x@streaming.campfirenow.com//room/#{ id }/live.json")
+
+      trap('INT'){ exit! }
+
+      loop do
+        logging_errors do
+          Yajl::HttpStream.get(url) do |message|
+            case message['type'].to_s
+              when 'TextMessage'
+                body = message['body'].to_s
+                tokens = body.scan(%r/[^\s]+/)
+                arg, *args = tokens
+
+                if arg =~ %r|^\s*/|
+                  path = arg.strip
+                  command = @commands[path]
+                  if command
+                    logging_errors do
+                      command.call(*args)
+                    end
+                  end
+                end
+            end
+         end
+
+          sleep(rand(42))
+        end
+      end
+    end
+  end
+
+##
+#
+  mode(:setup) do
+    def run
+      puts self.class.config_path
+    end
+  end
+
+##
+#
+  def logging_errors(&block)
+    begin
+      block.call()
+    rescue Object => e
+      m, c, b = e.message, e.class, Array(e.backtrace).join("\n")
+      logger.error("#{ m }(#{ c })\n#{ b }")
+    end
+  end
+}
+
+BEGIN{
+  bindir = File.expand_path(File.dirname(__FILE__))
+  srcdir = File.dirname(bindir)
+  libdir = File.join(srcdir, 'lib')
+  lib = File.join(libdir, 'fbomb.rb')
+  require(test(?s, lib) ? lib : 'fbomb')
+}

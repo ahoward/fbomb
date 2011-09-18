@@ -1,0 +1,20 @@
+NAME
+  fbomb
+
+SYNOPSIS
+  fbomb is the dangerous campfire bot
+
+USAGE
+  1) get going
+    ./bin/fbomb setup
+
+  2) try out some commands
+    ./bin/fbomb /help
+    ./bin/fbomb /chucknorris
+    ./bin/fbomb /fukung canada
+
+  3) devestate your campfire room
+    ./bin/fbomb run
+
+CUSOMIZE
+  see lib/fbomb/commands/*
