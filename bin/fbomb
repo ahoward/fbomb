@@ -46,12 +46,14 @@ Main {
       campfire = FBomb::Campfire.new(domain, :token => token)
       room = campfire.room_for(room)
       room.join
+      at_exit{ room.leave }
+      room.speak("fbomb in da house...")
       id = room.id
 
       FBomb::Command.room = room
       url = URI.parse("http://#{ token }:x@streaming.campfirenow.com//room/#{ id }/live.json")
 
-      trap('INT'){ exit! }
+      trap('INT'){ exit }
 
       loop do
         logging_errors do
@@ -67,6 +69,7 @@ Main {
                   command = @commands[path]
                   if command
                     logging_errors do
+                      logger.info("#{ path } #{ args.join(' ') }")
                       command.call(*args)
                     end
                   end
@@ -94,6 +97,7 @@ Main {
     begin
       block.call()
     rescue Object => e
+      raise if e.is_a?(SystemExit)
       m, c, b = e.message, e.class, Array(e.backtrace).join("\n")
       logger.error("#{ m }(#{ c })\n#{ b }")
     end
