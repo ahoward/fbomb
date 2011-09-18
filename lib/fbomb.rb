@@ -18,7 +18,6 @@
     def dependencies
       {
         'tinder'              =>  [ 'tinder'         , '~> 1.7.0'  ]  , 
-        'twitter/json_stream' =>  [ 'twitter-stream' , '~> 0.1.14' ]  , 
         'yajl'                =>  [ 'yajl-ruby'      , '~> 0.8.3'  ]  , 
         'fukung'              =>  [ 'fukung'         , '~> 1.1.0'  ]  , 
         'main'                =>  [ 'main'           , '~> 4.7.6'  ] 
