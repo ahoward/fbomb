@@ -113,5 +113,23 @@ FBomb {
       end
     end
   }
+
+##
+#
+  command(:goodfuckingdesignadvice) {
+    call do |*args|
+      url = "http://goodfuckingdesignadvice.com/index.php"
+      html = `curl --location --silent #{ url.inspect }`
+      doc = Nokogiri::HTML(html)
+      msg = nil
+      doc.xpath('//div').each do |node|
+        if node['class'] =~ /advice/
+          text = node.text
+          msg = text
+        end
+      end
+      speak(msg) if msg
+    end
+  }
 }
 
