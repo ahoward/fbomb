@@ -86,5 +86,27 @@ FBomb {
     end
   }
 
+##
+#
+  command(:xkcd) {
+    call do |*args|
+      id = args.shift || rand(1000)
+      url = "http://xkcd.com/#{ id }/"
+      html = `curl --silent #{ url.inspect }`
+      doc = Nokogiri::HTML(html)
+      chunks = []
+      doc.xpath('//h3').each do |node|
+        text = node.text
+        case text
+          when %r'Permanent link to this comic:', %r'hotlinking/embedding'
+            link = text.split(':').last
+            link = "http:#{ link }" unless link['://']
+            chunks << link
+        end
+      end
+      msg = chunks.reverse.join("\n")
+      speak(msg) unless msg.empty?
+    end
+  }
 }
 

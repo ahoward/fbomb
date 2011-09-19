@@ -20,7 +20,8 @@
         'tinder'              =>  [ 'tinder'         , '~> 1.7.0'  ]  , 
         'yajl'                =>  [ 'yajl-ruby'      , '~> 1.0.0'  ]  , 
         'fukung'              =>  [ 'fukung'         , '~> 1.1.0'  ]  , 
-        'main'                =>  [ 'main'           , '~> 4.7.6'  ] 
+        'main'                =>  [ 'main'           , '~> 4.7.6'  ]  ,
+        'nokogiri'            =>  [ 'nokogiri'       , '~> 1.5.0'  ] 
       }
     end
 
@@ -73,9 +74,21 @@
 ## openssl - STFU!
 #
   class Net::HTTP
-    def warn(msg)
-      Kernel.warn(msg) unless msg == "warning: peer certificate won't be verified in this SSL session"
+    require 'net/https'
+
+    module STFU
+      def warn(msg)
+        #Kernel.warn(msg) unless msg == "warning: peer certificate won't be verified in this SSL session"
+      end
+
+      def use_ssl=(flag)
+        super
+      ensure
+        @ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
     end
+
+    include(STFU)
   end
 
 ## global DSL hook
