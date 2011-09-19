@@ -22,7 +22,8 @@
         'yajl'                =>  [ 'yajl-ruby'      , '~> 1.0.0'  ]  , 
         'fukung'              =>  [ 'fukung'         , '~> 1.1.0'  ]  , 
         'main'                =>  [ 'main'           , '~> 4.7.6'  ]  ,
-        'nokogiri'            =>  [ 'nokogiri'       , '~> 1.5.0'  ] 
+        'nokogiri'            =>  [ 'nokogiri'       , '~> 1.5.0'  ]  ,
+        'google-search'       =>  [ 'google-search'  , '~> 1.0.2'  ] 
       }
     end
 
