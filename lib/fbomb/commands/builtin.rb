@@ -34,7 +34,11 @@ FBomb {
   command(:fukung) {
     call do |*args|
       tags = args.join(' ').strip.downcase
-      msg = Fukung.tag(tags).sort_by{ rand }.first(3).join("\n")
+      if tags.empty?
+        msg = Array(Fukung.random).sort_by{ rand }.first(3).join("\n")
+      else
+        msg = Fukung.tag(tags).sort_by{ rand }.first(3).join("\n")
+      end
       speak(msg) unless msg.strip.empty?
     end
   }
@@ -94,18 +98,19 @@ FBomb {
       url = "http://xkcd.com/#{ id }/"
       html = `curl --silent #{ url.inspect }`
       doc = Nokogiri::HTML(html)
-      chunks = []
+      links = []
       doc.xpath('//h3').each do |node|
         text = node.text
         case text
           when %r'Permanent link to this comic:', %r'hotlinking/embedding'
             link = text.split(':').last
             link = "http:#{ link }" unless link['://']
-            chunks << link
+            links << link
         end
       end
-      msg = chunks.reverse.join("\n")
-      speak(msg) unless msg.empty?
+      links.each do |link|
+        speak(link)
+      end
     end
   }
 }

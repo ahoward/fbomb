@@ -5,6 +5,7 @@
   require 'net/http'
   require 'net/https'
   require 'open-uri'
+  require 'fileutils'
 
 # libs
 #
@@ -47,24 +48,31 @@
     extend(FBomb)
   end
 
-# gems
+## isolate gems
 #
-  begin
-    require 'rubygems'
-  rescue LoadError
-    nil
-  end
+  require 'rubygems'
+  require 'isolate'
 
-  if defined?(gem)
-    FBomb.dependencies.each do |lib, dependency|
+  libdir = File.expand_path(File.join('~', '.fbomb', 'isolate'))
+  options = {:file => false, :path => libdir}
+
+  Isolate::Sandbox.new(options) do
+    ::FBomb.dependencies.each do |lib, dependency|
       gem(*dependency)
-      require(lib)
     end
-  end
+  end.activate
+  Isolate.refresh
 
+## load gems
+#
+  ::FBomb.dependencies.each do |lib, dependency|
+    require(lib)
+  end
   require "yajl/json_gem"     ### this *replaces* any other JSON.parse !
   require "yajl/http_stream"  ### we really do need this
 
+## load fbomb
+#
   FBomb.load %w[
     util.rb
     campfire.rb
