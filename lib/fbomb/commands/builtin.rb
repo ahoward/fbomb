@@ -131,5 +131,20 @@ FBomb {
       speak(msg) if msg
     end
   }
+
+  command(:quote) {
+    call do |*args|
+      url = "http://iheartquotes.com/api/v1/random?format=html&max_lines=4&max_characters=420"
+      html = `curl --location --silent #{ url.inspect }`
+      doc = Nokogiri::HTML(html)
+      msg = nil
+      #<a target="_parent" href='http://iheartquotes.com/fortune/show/victory_uber_allies_'>Victory uber allies!</a>
+      doc.xpath('//div[@class="rbcontent"]/a').each do |node|
+        text = node.text
+        msg = text
+      end
+      speak(msg) if msg
+    end
+  }
 }
 
