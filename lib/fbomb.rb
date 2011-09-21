@@ -23,7 +23,8 @@
         'fukung'              =>  [ 'fukung'         , '~> 1.1.0'  ]  , 
         'main'                =>  [ 'main'           , '~> 4.7.6'  ]  ,
         'nokogiri'            =>  [ 'nokogiri'       , '~> 1.5.0'  ]  ,
-        'google-search'       =>  [ 'google-search'  , '~> 1.0.2'  ] 
+        'google-search'       =>  [ 'google-search'  , '~> 1.0.2'  ]  ,
+        'unidecode'           =>  [ 'unidecode'      , '~> 1.0.0'  ]
       }
     end
 

@@ -134,11 +134,22 @@ FBomb {
 
   command(:designquote) {
     call do |*args|
-      data = JSON.parse(`curl --silent 'http://quotesondesign.com/api/3.0/api-3.0.json'`)
-      quote = data['quote']
-      author = data['author']
-      msg = quote + ' - ' + author
-      speak(msg) if msg
+      url = "http://quotesondesign.com"
+      cmd = "curl --location --silent #{ url.inspect }"
+      html = `#{ cmd  }`
+      doc = Nokogiri::HTML(html)
+      msg = nil
+      doc.xpath('//div').each do |node|
+        if node['id'] =~ /post-/
+          text = node.text
+          break(msg = text)
+        end
+      end
+      if msg
+        msg = msg.gsub(%r'\[\s+permalink\s+\]', '').gsub(%r'\[\s+Tweet\s+This\s+\]', '').strip
+        msg = Unidecoder.decode(msg)
+        speak(msg)
+      end
     end
   }
 
