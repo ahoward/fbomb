@@ -132,6 +132,16 @@ FBomb {
     end
   }
 
+  command(:designquote) {
+    call do |*args|
+      data = JSON.parse(`curl --silent 'http://quotesondesign.com/api/3.0/api-3.0.json'`)
+      quote = data['quote']
+      author = data['author']
+      msg = quote + ' - ' + author
+      speak(msg) if msg
+    end
+  }
+
   command(:quote) {
     call do |*args|
       url = "http://iheartquotes.com/api/v1/random?format=html&max_lines=4&max_characters=420"
