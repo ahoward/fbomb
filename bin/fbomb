@@ -28,7 +28,7 @@ Main {
 
   def load_room!
     @domain, @token, room = config[:campfire].slice(:domain, :token, :room).values
-    @campfire = FBomb::Campfire.new(domain, :token => token)
+    @campfire = FBomb::Campfire.new(@domain, :token => @token)
     @room = @campfire.room_for(room)
     FBomb::Command.room = @room
   end
