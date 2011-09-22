@@ -27,7 +27,7 @@ Main {
   end
 
   def load_room!
-    domain, token, room = config[:campfire].slice(:domain, :token, :room).values
+    @domain, @token, room = config[:campfire].slice(:domain, :token, :room).values
     @campfire = FBomb::Campfire.new(domain, :token => token)
     @room = @campfire.room_for(room)
     FBomb::Command.room = @room
@@ -57,8 +57,7 @@ Main {
       at_exit{ @room.leave }
       @room.speak("fbomb in da house...")
 
-      id = @room.id
-      url = URI.parse("http://#{ token }:x@streaming.campfirenow.com//room/#{ id }/live.json")
+      url = URI.parse("http://#{ @token }:x@streaming.campfirenow.com//room/#{ @room.id }/live.json")
 
       trap('INT'){ exit }
 
