@@ -52,12 +52,12 @@ Main {
     end
 
     def drop_fbombs!
+      FBomb::Command.room = @room
       @room.join
       at_exit{ @room.leave }
       @room.speak("fbomb in da house...")
-      id = @room.id
 
-      FBomb::Command.room = room
+      id = @room.id
       url = URI.parse("http://#{ token }:x@streaming.campfirenow.com//room/#{ id }/live.json")
 
       trap('INT'){ exit }
