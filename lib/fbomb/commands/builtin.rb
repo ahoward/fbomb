@@ -132,6 +132,8 @@ FBomb {
     end
   }
 
+##
+#
   command(:designquote) {
     call do |*args|
       url = "http://quotesondesign.com"
@@ -153,6 +155,8 @@ FBomb {
     end
   }
 
+##
+#
   command(:quote) {
     call do |*args|
       url = "http://iheartquotes.com/api/v1/random?format=html&max_lines=4&max_characters=420"
@@ -165,6 +169,34 @@ FBomb {
         msg = text
       end
       speak(msg) if msg
+    end
+  }
+
+##
+#
+  command(:people){
+    call do |*args|
+      msgs = []
+      room.users.each do |user|
+        name = user['name']
+        email_address = user['email_address']
+        avatar_url = user['avatar_url']
+        speak(avatar_url)
+        speak("#{ name } // #{ email_address }")
+      end
+    end
+  }
+
+##
+#
+  command(:rawk){
+    call do |*args|
+      urls = %w(
+        http://s3.amazonaws.com/drawohara.com.images/angus1.gif
+        http://img.maniadb.com/images/artist/117/117027.jpg
+        http://images.starpulse.com/Photos/pv/Van%20Halen-7.JPG
+      )
+      speak(urls[rand(urls.size)])
     end
   }
 }

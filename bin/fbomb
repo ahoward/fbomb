@@ -18,17 +18,26 @@ Main {
 #
   def run
     load_commands!
+    load_room!
+    run_command! if argv.first =~ %r|^/| unless argv.empty?
   end
 
   def load_commands!
     @commands = FBomb::Command.load(config[:commands])
-    run_command! if argv.first =~ %r|^/| unless argv.empty?
+  end
+
+  def load_room!
+    domain, token, room = config[:campfire].slice(:domain, :token, :room).values
+    @campfire = FBomb::Campfire.new(domain, :token => token)
+    @room = @campfire.room_for(room)
+    FBomb::Command.room = @room
   end
 
   def run_command!
     path, args = argv
     commands = FBomb::Command.table
     command = commands[path] or abort("no such command #{ path }")
+    FBomb::Command.room = nil
     command.call(*args)
     exit
   end
@@ -38,17 +47,15 @@ Main {
   mode(:run) do
     def run
       load_commands!
+      load_room!
       drop_fbombs!
     end
 
     def drop_fbombs!
-      domain, token, room = config[:campfire].slice(:domain, :token, :room).values
-      campfire = FBomb::Campfire.new(domain, :token => token)
-      room = campfire.room_for(room)
-      room.join
-      at_exit{ room.leave }
-      room.speak("fbomb in da house...")
-      id = room.id
+      @room.join
+      at_exit{ @room.leave }
+      @room.speak("fbomb in da house...")
+      id = @room.id
 
       FBomb::Command.room = room
       url = URI.parse("http://#{ token }:x@streaming.campfirenow.com//room/#{ id }/live.json")
