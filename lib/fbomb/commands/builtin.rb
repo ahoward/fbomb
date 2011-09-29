@@ -189,6 +189,20 @@ FBomb {
 
 ##
 #
+  command(:peeps){
+    call do |*args|
+      msgs = []
+      room.users.each do |user|
+        name = user['name']
+        email_address = user['email_address']
+        msgs.push("#{ name }")
+      end
+      speak(msg.join(', '))
+    end
+  }
+
+##
+#
   command(:rawk){
     call do |*args|
       urls = %w(
@@ -212,13 +226,14 @@ FBomb {
         node.xpath('//img').each do |img|
           src = img['src']
           alt = img['alt']
+          url = src
 
-          cmd = "curl --silent --dump-header /dev/stderr #{ src.inspect } >/dev/null"
-          status, stdout, stderr = systemu(cmd)
+          #cmd = "curl --silent --dump-header /dev/stderr #{ src.inspect } >/dev/null"
+          #status, stdout, stderr = systemu(cmd)
+          #location = stderr[/Location:(.*)$/].split(':', 2).last.to_s.strip
+          #url = location
 
-          location = stderr[/Location:(.*)$/].split(':', 2).last.to_s.strip
-
-          speak(location)
+          speak(url)
           speak(alt)
           break
         end
