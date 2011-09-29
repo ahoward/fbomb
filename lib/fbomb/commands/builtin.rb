@@ -197,7 +197,7 @@ FBomb {
         email_address = user['email_address']
         msgs.push("#{ name }")
       end
-      speak(msg.join(', '))
+      speak(msgs.join(', '))
     end
   }
 
