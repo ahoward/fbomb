@@ -2,16 +2,6 @@ FBomb {
 
 ##
 #
-  command(:reload){
-    help 'reload fbomb commands'
-    
-    call do |*args|
-      FBomb::Command.table = FBomb::Command::Table.new
-      FBomb::Command.load(Command.command_paths)
-      speak('locked and loaded.')
-    end
-  }
-  
   command(:rhymeswith) {
     help 'show ryhming words'
 

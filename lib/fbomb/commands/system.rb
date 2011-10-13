@@ -15,6 +15,27 @@ FBomb {
     end
   }
 
+  command(:reload){
+    help 'reload fbomb commands'
+    
+    call do |*args|
+      Thread.critical = true
+      table = FBomb::Command.table
+
+      begin
+        FBomb::Command.table = FBomb::Command::Table.new
+        FBomb::Command.load(Command.command_paths)
+        speak('locked and loaded.')
+      rescue Object => e
+        #msg = "#{ e.message }(#{ e.class })\n#{ Array(e.backtrace).join(10.chr) }"
+        #speak(msg)
+        FBomb::Command.table = table
+      ensure
+        Thread.critical = false
+      end
+    end
+  }
+
   command(:fbomb) {
     call {
       urls = %w(
