@@ -16,9 +16,11 @@ module FBomb
       fattr(:table){ Table.new }
       fattr(:dir){ File.join(File.expand_path(File.dirname(__FILE__)), 'commands') }
       fattr(:room)
+      fattr(:command_paths){ [] }
 
       def load(*args)
         args.flatten.uniq.each do |arg|
+          Command.command_paths << arg
           case arg.to_s
             when %r|^/|
               load_absolute_path(arg)
