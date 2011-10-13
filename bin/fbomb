@@ -23,7 +23,7 @@ Main {
   end
 
   def load_commands!
-    @commands = FBomb::Command.load(config[:commands])
+    FBomb::Command.load(config[:commands])
   end
 
   def load_room!
@@ -72,7 +72,7 @@ Main {
 
                 if arg =~ %r|^\s*/|
                   path = arg.strip
-                  command = @commands[path]
+                  command = FBomb::Command.table[path]
                   if command
                     logging_errors do
                       logger.info("#{ path } #{ args.join(' ') }")
