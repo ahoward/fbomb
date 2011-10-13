@@ -19,7 +19,7 @@ FBomb {
     help 'reload fbomb commands'
     
     call do |*args|
-      Thread.critical = true
+      #Thread.critical = true
       table = FBomb::Command.table
 
       begin
@@ -31,7 +31,7 @@ FBomb {
         #speak(msg)
         FBomb::Command.table = table
       ensure
-        Thread.critical = false
+        #Thread.critical = false
       end
     end
   }
