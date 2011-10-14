@@ -65,8 +65,17 @@ FBomb {
         when /image|img|i/i
           args.shift
           query = args.join(' ')
-          Google::Search::Image.new(:query => query, :image_size => :icon).each do |result|
-            msg << "#{ result.uri }\n"
+          @cache ||= []
+          images = Google::Search::Image.new(:query => query, :image_size => :small)
+          if images.any?
+            images.each do |result|
+              next if @cache.include? result.id
+              @cache << result.id
+              msg = "#{ result.uri }\n"
+              break
+            end
+          else
+            msg = "No results for: #{query}"
           end
         else
           query = args.join(' ')
