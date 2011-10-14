@@ -54,7 +54,7 @@
 ## isolate gems
 #
   require 'rubygems'
-  require 'isolate'
+  # require 'isolate'
 
   libdir = File.expand_path(File.join('~', '.fbomb', 'isolate'))
   options = {:file => false, :path => libdir}
