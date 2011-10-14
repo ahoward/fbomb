@@ -61,6 +61,10 @@
 
   # Isolate::Sandbox.new(options) do
     ::FBomb.dependencies.each do |lib, dependency|
+      puts "="*45
+      puts lib
+      puts dependency
+      puts "="*45
       gem(*dependency)
     end
   # end.activate

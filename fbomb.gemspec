@@ -31,14 +31,15 @@ Gem::Specification::new do |spec|
   spec.test_files = nil
 
   
-    spec.add_dependency(*["tinder", "~> 1.7.0"])
-  
-    spec.add_dependency(*["main", "~> 4.7.6"])
-  
-    spec.add_dependency(*["fukung", "~> 1.1.0"])
-  
-    spec.add_dependency(*["yajl-ruby", "~> 0.8.3"])
-  
+    spec.add_dependency(*["tinder"        , "~> 1.7.0"])
+    spec.add_dependency(*["main"          , "~> 4.7.6"])
+    spec.add_dependency(*["fukung"        , "~> 1.1.0"])
+    spec.add_dependency(*["yajl-ruby"     , "~> 1.0.0"])
+    spec.add_dependency(*["nokogiri"      , "~> 1.5.0"])
+    spec.add_dependency(*['google-search' , '~> 1.0.2'])
+    spec.add_dependency(*['unidecode'     , '~> 1.0.0'])
+    spec.add_dependency(*['systemu'       , '~> 2.3.0'])
+    
 
   spec.extensions.push(*[])
 
