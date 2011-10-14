@@ -11,7 +11,9 @@ FBomb {
       speak('locked and loaded.')
     end
   }
-  
+
+##
+#  
   command(:rhymeswith) {
     help 'show ryhming words'
 
@@ -19,12 +21,16 @@ FBomb {
 
     call do |*args|
       args.each do |arg|
-        word = CGI.escape(arg.strip)
-        url = "http://www.zachblume.com/apis/rhyme.php?format=xml&word=#{ word }"
-        data = `curl --silent #{ url.inspect }`
-        words = data.scan(%r|<word>([^<]*)</word>|).flatten
-        msg = words.join(" ")
-        speak(msg)
+        if arg.strip == 'orange'
+          speak('nothing rhymes with orange dumbass')
+        else
+          word = CGI.escape(arg.strip)
+          url = "http://www.zachblume.com/apis/rhyme.php?format=xml&word=#{ word }"
+          data = `curl --silent #{ url.inspect }`
+          words = data.scan(%r|<word>([^<]*)</word>|).flatten
+          msg = words.join(" ")
+          speak(msg)
+        end
       end
     end
   }
