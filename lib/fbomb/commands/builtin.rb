@@ -2,6 +2,18 @@ FBomb {
 
 ##
 #
+  command(:reload){
+    help 'reload fbomb commands'
+    
+    call do |*args|
+      FBomb::Command.table = FBomb::Command::Table.new
+      FBomb::Command.load(Command.command_paths)
+      speak('locked and loaded.')
+    end
+  }
+
+##
+#  
   command(:rhymeswith) {
     help 'show ryhming words'
 
@@ -9,12 +21,16 @@ FBomb {
 
     call do |*args|
       args.each do |arg|
-        word = CGI.escape(arg.strip)
-        url = "http://www.zachblume.com/apis/rhyme.php?format=xml&word=#{ word }"
-        data = `curl --silent #{ url.inspect }`
-        words = data.scan(%r|<word>([^<]*)</word>|).flatten
-        msg = words.join(" ")
-        speak(msg)
+        if arg.strip == 'orange'
+          speak('nothing rhymes with orange dumbass')
+        else
+          word = CGI.escape(arg.strip)
+          url = "http://www.zachblume.com/apis/rhyme.php?format=xml&word=#{ word }"
+          data = `curl --silent #{ url.inspect }`
+          words = data.scan(%r|<word>([^<]*)</word>|).flatten
+          msg = words.join(" ")
+          speak(msg)
+        end
       end
     end
   }
@@ -55,8 +71,17 @@ FBomb {
         when /image|img|i/i
           args.shift
           query = args.join(' ')
-          Google::Search::Image.new(:query => query, :image_size => :icon).each do |result|
-            msg << "#{ result.uri }\n"
+          @cache ||= []
+          images = Google::Search::Image.new(:query => query, :image_size => :small)
+          if images.any?
+            images.each do |result|
+              next if @cache.include? result.id
+              @cache << result.id
+              msg = "#{ result.uri }\n"
+              break
+            end
+          else
+            msg = "No results for: #{query}"
           end
         else
           query = args.join(' ')
@@ -67,7 +92,34 @@ FBomb {
       speak(msg) unless msg.empty?
     end
   }
+  
+##
+#
+  command(:fail){
+    setup{ require "nokogiri"}
 
+    call do |*args|
+      msg = ""
+      query = CGI.escape(args.join(' ').strip)
+      url = "http://failblog.org/?s=#{query}"
+      data = `curl --silent #{ url.inspect }`
+      doc = Nokogiri::HTML(data)
+      images = doc.search('div.entry img').collect{|i| i.get_attribute('src')}
+      @cache ||= []
+      if images.any?
+        images.each do |result|
+          next if @cache.include? result
+          @cache << result
+          msg = "#{ result }\n"
+          break
+        end
+      else
+        msg = "No results for: #{query}"
+      end
+      speak(msg) unless msg.empty?
+    end
+  }
+  
 ##
 #
   command(:gist) {

@@ -54,17 +54,21 @@
 ## isolate gems
 #
   require 'rubygems'
-  require 'isolate'
+  # require 'isolate'
 
   libdir = File.expand_path(File.join('~', '.fbomb', 'isolate'))
   options = {:file => false, :path => libdir}
 
-  Isolate::Sandbox.new(options) do
+  # Isolate::Sandbox.new(options) do
     ::FBomb.dependencies.each do |lib, dependency|
+      puts "="*45
+      puts lib
+      puts dependency
+      puts "="*45
       gem(*dependency)
     end
-  end.activate
-  Isolate.refresh
+  # end.activate
+  # Isolate.refresh
 
 ## load gems
 #
