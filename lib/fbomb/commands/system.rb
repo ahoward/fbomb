@@ -25,7 +25,19 @@ FBomb {
       begin
         FBomb::Command.table = FBomb::Command::Table.new
         FBomb::Command.load(Command.command_paths)
-        speak('locked and loaded.')
+
+        messages = [
+          "locked and loaded.",
+          "locked, cocked, and ready to rock.",
+          "let's roll.",
+          "it's time to kick ass and chew bubble gum. and i'm all out of gum.",
+          "let's do this.",
+          "ERROR! no just kidding, it's all good",
+          "we need guns. lots of guns.",
+          "beep boop reloaded",
+          "awww yeah, let's rock!"
+        ]
+        speak(messages.sort_by { rand }.first)
       rescue Object => e
         #msg = "#{ e.message }(#{ e.class })\n#{ Array(e.backtrace).join(10.chr) }"
         #speak(msg)
