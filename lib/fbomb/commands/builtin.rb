@@ -271,23 +271,22 @@ FBomb {
   command(:pixtress){
     call do |*args|
       url = "http://pixtress.tumblr.com/random"
-      html = `curl --location --silent #{ url.inspect }`
-      doc = Nokogiri::HTML(html)
-      msg = nil
-      doc.xpath('//div[@class="ThePhoto"]/a').each do |node|
-        node.xpath('//img').each do |img|
+
+      require 'mechanize'
+      agent = Mechanize.new
+
+      page = agent.get(url)
+
+      page.search('//div[@class="ThePhoto"]/a').each do |node|
+        node.search('//img').each do |img|
           src = img['src']
           alt = img['alt']
           url = src
 
-          #cmd = "curl --silent --dump-header /dev/stderr #{ src.inspect } >/dev/null"
-          #status, stdout, stderr = systemu(cmd)
-          #location = stderr[/Location:(.*)$/].split(':', 2).last.to_s.strip
-          #url = location
+          image = agent.get(src)
 
-          speak(url)
+          upload(image)
           speak(alt)
-          break
         end
       end
     end

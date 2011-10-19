@@ -50,7 +50,7 @@ module FBomb
       def load_uri(arg)
         uri = arg.to_s
         open(uri) do |fd|
-          open(path){|fd| load_string(fd.read)}
+          open(path){|fd| load_string(fd.read, uri, 1)}
         end
       end
 
@@ -63,14 +63,14 @@ module FBomb
       def load_absolute_path(arg)
         path = File.expand_path(arg.to_s)
         path += '.rb' unless path =~ /\.rb\Z/
-        open(path){|fd| load_string(fd.read)}
+        open(path){|fd| load_string(fd.read, path, 1)}
       end
 
-      def load_string(string, dangerous = true)
+      def load_string(string, __file__, __lineno__, dangerous = true)
         Thread.new(string, dangerous) do |string, dangerous|
           Thread.current.abort_on_exception = true
           $SAFE = 12 unless dangerous
-          Kernel.eval(string)
+          module_eval(string, __file__, __lineno__)
         end.value
       end
     end
@@ -87,7 +87,23 @@ module FBomb
     end
 
     def call(*args, &block)
-      block ? @call=call : instance_exec(*args, &@call)
+      arity = @call.arity
+
+      argv =
+        if arity >= 0
+          args[0, arity]
+        else
+          head = []
+          tail = []
+          n = arity.abs - 1
+          head = args[0...n]
+          tail = args[n..-1]
+          [*(head + tail)]
+        end
+
+      argv.compact!
+
+      block ? @call=call : instance_exec(*argv, &@call)
     end
 
     def call=(call)
@@ -98,6 +114,14 @@ module FBomb
       module_eval <<-__, __FILE__, __LINE__
         def #{ method }(*args, &block)
           room ? room.#{ method }(*args, &block) : puts(*args, &block)
+        end
+      __
+    end
+
+    %w( upload ).each do |method|
+      module_eval <<-__, __FILE__, __LINE__
+        def #{ method }(*args, &block)
+          room ? room.#{ method }(*args, &block) : p(*args, &block)
         end
       __
     end
