@@ -204,26 +204,34 @@ FBomb {
 #
   command(:pixtress){
     call do |*args|
-      url = "http://pixtress.tumblr.com/random"
-      html = `curl --location --silent #{ url.inspect }`
-      doc = Nokogiri::HTML(html)
-      msg = nil
-      doc.xpath('//div[@class="ThePhoto"]/a').each do |node|
-        node.xpath('//img').each do |img|
+      url = "http://dj4-horoscopes.tumblr.com/random"
+
+      agent = Mechanize.new
+      agent.open_timeout = 240
+      agent.read_timeout = 240
+
+      page = agent.get(url)
+
+      page.search('//div[@class="ThePhoto"]/a').each do |node|
+        node.search('//img').each do |img|
           src = img['src']
           alt = img['alt']
+          url = src
 
-          cmd = "curl --silent --dump-header /dev/stderr #{ src.inspect } >/dev/null"
-          status, stdout, stderr = systemu(cmd)
+          image = agent.get(src)
 
-          location = stderr[/Location:(.*)$/].split(':', 2).last.to_s.strip
+          Util.tmpdir do
+            open(image.filename, 'w'){|fd| fd.write(image.body)}
 
-          speak(location)
-          speak(alt)
+            url = File.join(room.url, "uploads.xml")
+            cmd = "curl -Fupload=@#{ image.filename.inspect } #{ url.inspect }"
+            system(cmd)
+            speak(alt)
+          end
+
           break
         end
       end
     end
   }
 }
-
