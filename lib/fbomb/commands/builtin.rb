@@ -273,7 +273,8 @@ FBomb {
       url = "http://pixtress.tumblr.com/random"
 
       agent = Mechanize.new
-      agent.read_timeout = 120
+      agent.open_timeout = 240
+      agent.read_timeout = 240
 
       page = agent.get(url)
 
