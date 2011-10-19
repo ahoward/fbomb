@@ -272,7 +272,6 @@ FBomb {
     call do |*args|
       url = "http://pixtress.tumblr.com/random"
 
-      require 'mechanize'
       agent = Mechanize.new
 
       page = agent.get(url)
@@ -285,8 +284,16 @@ FBomb {
 
           image = agent.get(src)
 
-          upload(image)
-          speak(alt)
+          Util.tmpdir do
+            open(image.filename, 'w'){|fd| fd.write(image.body)}
+
+            url = File.join(room.url, "uploads.xml")
+            cmd = "curl -Fupload=@#{ image.filename.inspect } #{ url.inspect }"
+            system(cmd)
+            speak(alt)
+          end
+
+          break
         end
       end
     end

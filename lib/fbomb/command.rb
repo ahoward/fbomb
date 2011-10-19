@@ -120,8 +120,9 @@ module FBomb
 
     %w( upload ).each do |method|
       module_eval <<-__, __FILE__, __LINE__
-        def #{ method }(*args, &block)
-          room ? room.#{ method }(*args, &block) : p(*args, &block)
+        def #{ method }(file, content_type = nil, filename = nil)
+          room ? room.#{ method }(file, content_type, filename) : p(file, content_type, filename)
+          file
         end
       __
     end

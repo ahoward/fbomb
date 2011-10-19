@@ -14,6 +14,9 @@ Main {
       - builtin
   __
 
+
+  option('--force', '-f')
+
 ##
 #
   def run
@@ -29,6 +32,7 @@ Main {
   def load_room!
     @domain, @token, room = config[:campfire].slice(:domain, :token, :room).values
     @campfire = FBomb::Campfire.new(@domain, :token => @token)
+    @campfire.token = @token
     @room = @campfire.room_for(room)
     FBomb::Command.room = @room
   end
@@ -37,9 +41,29 @@ Main {
     path, args = argv
     commands = FBomb::Command.table
     command = commands[path] or abort("no such command #{ path }")
-    FBomb::Command.room = nil
+    #FBomb::Command.room = nil unless params['force'].given?
     command.call(*args)
     exit
+  end
+
+##
+#
+  mode(:shell) do
+    def run
+      load_commands!
+      load_room!
+      require 'pry'
+      Pry.hooks[:before_session] = proc{}
+      prompt = "#{ config.campfire.domain }[#{ config.campfire.room }] >> "
+      Pry.config.prompt = proc{|*a| prompt } 
+      binding.pry
+    end
+
+    def method_missing(method, *args, &block)
+      ivar = "@#{ method }"
+      super unless instance_variable_defined?(ivar)
+      instance_variable_get(ivar)
+    end
   end
 
 ##

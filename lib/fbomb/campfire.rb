@@ -53,6 +53,14 @@ module FBomb
       end
     end
 
+    module UrlExtension
+      attr_accessor :campfire
+
+      def url
+        File.join(campfire.url, "room/#{ id }")
+      end
+    end
+
     def Campfire.new(*args, &block)
       allocate.tap do |instance|
         instance.send(:initialize, *args, &block)
@@ -65,7 +73,27 @@ module FBomb
       room.extend(SearchExtension)
       room.extend(UserExtension)
       room.extend(StreamExtension)
+      room.extend(UrlExtension)
+      room.campfire = self
       room
+    end
+
+    attr_accessor :token
+
+    def url
+      if token
+        "#{ scheme }://#{ token }:X@#{ host }"
+      else
+        "#{ scheme }://#{ host }"
+      end
+    end
+
+    def host
+      connection.raw_connection.host
+    end
+
+    def scheme
+      connection.raw_connection.scheme
     end
   end
 end

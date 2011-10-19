@@ -1,4 +1,53 @@
 module Util
+  def hostname
+    @hostname ||= (Socket.gethostname rescue 'localhost')
+  end
+
+  def pid
+    @pid ||= Process.pid
+  end
+
+  def ppid
+    @ppid ||= Process.ppid
+  end
+
+  def thread_id
+    Thread.current.object_id.abs
+  end
+
+  def tmpdir(*args, &block)
+    options = Hash === args.last ? args.pop : {}
+
+    dirname = Dir.tmpdir
+
+    return dirname unless block
+
+    turd = options['turd'] || options[:turd]
+
+    basename = [ hostname, ppid, pid, thread_id, rand ].join('-')
+
+    made = false
+
+    42.times do |n|
+      pathname = File.join(dirname, "#{ basename }-n=#{ n }")
+
+      begin
+        FileUtils.mkdir_p(pathname)
+        made = true
+        return Dir.chdir(pathname, &block)
+      rescue Object
+        sleep(rand)
+        :retry
+      ensure
+        unless turd
+          FileUtils.rm_rf(pathname) if made
+        end
+      end
+    end
+
+    raise "failed to make tmpdir in #{ dirname.inspect }"
+  end
+
   def paths_for(*args)
     path = args.flatten.compact.join('/')
     path.gsub!(%r|[.]+/|, '/')

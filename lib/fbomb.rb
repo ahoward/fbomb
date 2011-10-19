@@ -6,6 +6,7 @@
   require 'net/https'
   require 'open-uri'
   require 'fileutils'
+  require 'tmpdir'
 
 # libs
 #
@@ -18,14 +19,17 @@
 
     def dependencies
       {
-        'tinder'              =>  [ 'tinder'         , '>= 1.7.0'  ]  , 
-        'yajl'                =>  [ 'yajl-ruby'      , '~> 0.8.2'  ]  , 
-        'fukung'              =>  [ 'fukung'         , '>= 1.1.0'  ]  , 
-        'main'                =>  [ 'main'           , '>= 4.7.6'  ]  ,
-        'nokogiri'            =>  [ 'nokogiri'       , '>= 1.5.0'  ]  ,
-        'google-search'       =>  [ 'google-search'  , '>= 1.0.2'  ]  ,
-        'unidecode'           =>  [ 'unidecode'      , '>= 1.0.0'  ]  ,
-        'systemu'             =>  [ 'systemu'        , '>= 2.3.0'  ]
+        'tinder'              =>  [ 'tinder'         , '>= 1.7.0'   ]  , 
+        'yajl'                =>  [ 'yajl-ruby'      , '~> 0.8.2'   ]  , 
+        'fukung'              =>  [ 'fukung'         , '>= 1.1.0'   ]  , 
+        'main'                =>  [ 'main'           , '>= 4.7.6'   ]  ,
+        'nokogiri'            =>  [ 'nokogiri'       , '>= 1.5.0'   ]  ,
+        'google-search'       =>  [ 'google-search'  , '>= 1.0.2'   ]  ,
+        'unidecode'           =>  [ 'unidecode'      , '>= 1.0.0'   ]  ,
+        'systemu'             =>  [ 'systemu'        , '>= 2.3.0'   ]  ,
+        'pry'                 =>  [ 'pry'            , '>= 0.9.6.2' ]  ,
+        'mechanize'           =>  [ 'mechanize'      , '>= 2.0.1'   ]  ,
+        'mime/types'          =>  [ 'mime-types'     , '>= 1.16'    ]
       }
     end
 
@@ -88,6 +92,17 @@
 
 ## openssl - STFU!
 #
+  verbose = $VERBOSE
+  begin
+    require 'openssl'
+    $VERBOSE = nil
+    OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+  rescue Object => e
+    :STFU
+  ensure
+    $VERBOSE = verbose
+  end
+
   class Net::HTTP
     require 'net/https'
 
