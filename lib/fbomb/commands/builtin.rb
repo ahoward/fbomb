@@ -204,6 +204,41 @@ FBomb {
 #
   command(:pixtress){
     call do |*args|
+      url = "http://pixtress.tumblr.com/random"
+
+      agent = Mechanize.new
+      agent.open_timeout = 240
+      agent.read_timeout = 240
+
+      page = agent.get(url)
+
+      page.search('//div[@class="ThePhoto"]/a').each do |node|
+        node.search('//img').each do |img|
+          src = img['src']
+          alt = img['alt']
+          url = src
+
+          image = agent.get(src)
+
+          Util.tmpdir do
+            open(image.filename, 'w'){|fd| fd.write(image.body)}
+
+            url = File.join(room.url, "uploads.xml")
+            cmd = "curl -Fupload=@#{ image.filename.inspect } #{ url.inspect }"
+            system(cmd)
+            speak(alt)
+          end
+
+          break
+        end
+      end
+    end
+  }
+
+##
+#
+  command(:horoscope){
+    call do |*args|
       url = "http://dj4-horoscopes.tumblr.com/random"
 
       agent = Mechanize.new
@@ -234,4 +269,5 @@ FBomb {
       end
     end
   }
+
 }
