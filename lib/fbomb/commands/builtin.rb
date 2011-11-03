@@ -271,33 +271,44 @@ FBomb {
   command(:pixtress){
     call do |*args|
       url = "http://pixtress.tumblr.com/random"
+      error = nil
 
-      agent = Mechanize.new
-      agent.open_timeout = 240
-      agent.read_timeout = 240
+      4.times do
+        begin
+          agent = Mechanize.new
+          agent.open_timeout = 240
+          agent.read_timeout = 240
 
-      page = agent.get(url)
+          page = agent.get(url)
 
-      page.search('//div[@class="ThePhoto"]/a').each do |node|
-        node.search('//img').each do |img|
-          src = img['src']
-          alt = img['alt']
-          url = src
+          page.search('//div[@class="ThePhoto"]/a').each do |node|
+            node.search('//img').each do |img|
+              src = img['src']
+              alt = img['alt']
+              url = src
 
-          image = agent.get(src)
+              image = agent.get(src)
 
-          Util.tmpdir do
-            open(image.filename, 'w'){|fd| fd.write(image.body)}
+              Util.tmpdir do
+                open(image.filename, 'w'){|fd| fd.write(image.body)}
 
-            url = File.join(room.url, "uploads.xml")
-            cmd = "curl -Fupload=@#{ image.filename.inspect } #{ url.inspect }"
-            system(cmd)
-            speak(alt)
+                url = File.join(room.url, "uploads.xml")
+                cmd = "curl -Fupload=@#{ image.filename.inspect } #{ url.inspect }"
+                system(cmd)
+                speak(alt)
+              end
+
+              break
+            end
           end
 
           break
+        rescue Object => error
+          :retry
         end
       end
+
+      raise error if error
     end
   }
 }
