@@ -315,7 +315,9 @@ FBomb {
 ##
 #
   command(:shaka){
-    speak('http://s3.amazonaws.com/drawohara.com.images/shaka.jpg')
+    call do |*args|
+      speak('http://s3.amazonaws.com/drawohara.com.images/shaka.jpg')
+    end
   }
 }
 
