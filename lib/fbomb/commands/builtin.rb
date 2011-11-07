@@ -311,5 +311,11 @@ FBomb {
       raise error if error
     end
   }
+
+##
+#
+  command(:shaka){
+    speak('http://s3.amazonaws.com/drawohara.com.images/shaka.jpg')
+  }
 }
 
