@@ -319,5 +319,13 @@ FBomb {
       speak('http://s3.amazonaws.com/drawohara.com.images/shaka.jpg')
     end
   }
+
+##
+#
+  command(:unicorn){
+    call do |*args|
+      speak('http://ficdn.fashionindie.com/wp-content/uploads/2010/04/exterface_unicorn_03.jpg')
+    end
+  }
 }
 
