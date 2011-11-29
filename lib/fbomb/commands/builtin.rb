@@ -323,8 +323,12 @@ FBomb {
 ##
 #
   command(:unicorn){
+    urls = [
+      'http://ficdn.fashionindie.com/wp-content/uploads/2010/04/exterface_unicorn_03.jpg', 
+      'http://fc04.deviantart.net/fs51/f/2009/281/a/7/White_Unicorn_My_Little_Pony_by_Barkingmadd.jpg'
+    ]
     call do |*args|
-      speak('http://ficdn.fashionindie.com/wp-content/uploads/2010/04/exterface_unicorn_03.jpg')
+      speak(urls.sample)
     end
   }
 }
