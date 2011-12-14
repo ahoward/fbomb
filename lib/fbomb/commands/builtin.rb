@@ -334,7 +334,7 @@ FBomb {
 
     call do |*args|
       if args.first == 'bomb'
-        images = Google::Search::Image.new(:query => query, :image_size => :small)
+        images = Google::Search::Image.new(:query => 'unicorn', :image_size => :small)
         msg = images.sort_by{ rand }.first(10)
         speak(msg)
       else
