@@ -323,14 +323,23 @@ FBomb {
 ##
 #
   command(:unicorn){
+    setup{ require "google-search" }
+
     urls = [
       'http://ficdn.fashionindie.com/wp-content/uploads/2010/04/exterface_unicorn_03.jpg', 
       'http://fc04.deviantart.net/fs51/f/2009/281/a/7/White_Unicorn_My_Little_Pony_by_Barkingmadd.jpg',
       'http://th54.photobucket.com/albums/g119/jasonjmore/th_UnicornPeeingRainbow.jpg',
       'http://th242.photobucket.com/albums/ff99/1010496/th_unicornpr0n.gif'
     ]
+
     call do |*args|
-      speak(urls.sample)
+      if args.first == 'bomb'
+        images = Google::Search::Image.new(:query => query, :image_size => :small)
+        msg = images.sort_by{ rand }.first(10)
+        speak(msg)
+      else
+        speak(urls.sample)
+      end
     end
   }
 }
