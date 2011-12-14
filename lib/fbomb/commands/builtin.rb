@@ -335,7 +335,7 @@ FBomb {
     call do |*args|
       if args.first == 'bomb'
         n = Integer(args[1] || [3, rand(10)].max)
-        images = Google::Search::Image.new(:query => 'unicorn', :image_size => :small)
+        images = Google::Search::Image.new(:query => 'unicorn', :image_size => :medium)
         images = images.map{|result| result.uri}.uniq.sort_by{ rand }
         n.times{ speak(msg = images.pop) }
       else
