@@ -337,7 +337,7 @@ FBomb {
         n = Integer(args[1] || [3, rand(10)].max)
         images = Google::Search::Image.new(:query => 'unicorn', :image_size => :small)
         images = images.map{|result| result.uri}.uniq.sort_by{ rand }
-        n.times{ speak(msg) }
+        n.times{ speak(msg = images.pop) }
       else
         speak(urls.sample)
       end
