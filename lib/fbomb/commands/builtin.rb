@@ -343,5 +343,27 @@ FBomb {
       end
     end
   }
+
+  command(:boob){
+    setup{ require "google-search" }
+
+    urls = [
+      'http://i68.photobucket.com/albums/i23/jeff_bennion/Cracked/Underboobashx.jpg', 
+      'http://i68.photobucket.com/albums/i23/jeff_bennion/Cracked/under.jpg',
+      'http://i68.photobucket.com/albums/i23/jeff_bennion/Cracked/corsetlarge042.jpg',
+      'http://i68.photobucket.com/albums/i23/jeff_bennion/Cracked/HotCorset.jpg'
+    ]
+
+    call do |*args|
+      if args.first == 'bomb'
+        n = Integer(args[1] || [3, rand(10)].max)
+        images = Google::Search::Image.new(:query => 'boobs', :image_size => :medium)
+        images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+        n.times{ speak(msg = images.pop) }
+      else
+        speak(urls.sample)
+      end
+    end
+  }
 }
 
