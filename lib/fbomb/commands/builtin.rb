@@ -344,5 +344,17 @@ FBomb {
     end
   }
 
+  command(:steve){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'pink+chaps', :image_size => :medium)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "Special delivery for Chaps Bailey!")
+      speak(msg = images.sample)
+    end
+  }
+
 }
 
