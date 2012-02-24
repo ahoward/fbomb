@@ -268,6 +268,17 @@ FBomb {
 
 ##
 #
+  command(:meat){
+    call do |*args|
+      url = 'http://baconipsum.com/api/?type=meat-and-filler&paras=1'
+      data = `curl --silent #{ url.inspect }`
+      data.gsub!(/[\["\]]/, '')
+      speak(data)
+    end
+  }
+
+##
+#
   command(:pixtress){
     call do |*args|
       url = "http://pixtress.tumblr.com/random"
