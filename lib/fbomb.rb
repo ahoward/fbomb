@@ -20,7 +20,7 @@
     def dependencies
       {
         'tinder'              =>  [ 'tinder'         , '>= 1.7.0'   ]  , 
-        'yajl'                =>  [ 'yajl-ruby'      , '~> 0.8.2'   ]  , 
+        'yajl'                =>  [ 'yajl-ruby'      , '>= 0.8.2'   ]  , 
         'fukung'              =>  [ 'fukung'         , '>= 1.1.0'   ]  , 
         'main'                =>  [ 'main'           , '>= 4.7.6'   ]  ,
         'nokogiri'            =>  [ 'nokogiri'       , '>= 1.5.0'   ]  ,
@@ -63,13 +63,32 @@
   libdir = File.expand_path(File.join('~', '.fbomb', 'isolate'))
   options = {:file => false, :path => libdir}
 
+  deps = true
+  ::FBomb.dependencies.each do |lib, dependency|
+    unless Gem.try_activate(dependency.first)
+      deps = false
+      lib, version = dependency 
+      command = "gem install #{ lib.inspect } --version #{ version.inspect }"
+      #STDERR.puts(command)
+    end
+  end
+  #abort unless deps
+
   # Isolate::Sandbox.new(options) do
     ::FBomb.dependencies.each do |lib, dependency|
       #puts "="*45
       #puts lib
       #puts dependency
       #puts "="*45
-      gem(*dependency)
+      begin
+        gem(*dependency)
+      rescue Gem::LoadError
+        raise
+        lib, version = dependency 
+        command = "gem install #{ lib.inspect } --version #{ version.inspect }"
+        system(command)
+        retry
+      end
     end
   # end.activate
   # Isolate.refresh

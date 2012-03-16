@@ -68,8 +68,40 @@ Main {
 
 ##
 #
-  mode(:run) do
+  mode(:stop) do
     def run
+      pid = IO.read(File.join(dotdir, 'pid')).to_i
+      Process.kill(-9, pid)
+    rescue
+      nil
+    end
+  end
+
+  mode(:pid) do
+    def run
+      pid = IO.read(File.join(dotdir, 'pid')).to_i
+      puts pid
+    rescue
+      nil
+    end
+  end
+
+  mode(:run) do
+    option('--daemon', '-d')
+
+    def run
+      if params['daemon'].given?
+        DATA.flock(File::LOCK_EX|File::LOCK_NB) or exit!(42)
+        Dir.chdir('/tmp')
+        exit! if fork
+        exit! if fork
+        open(File.join(dotdir, 'pid'), 'w'){|fd| fd.write($$)}
+        open('/dev/null', 'w+') do |fd|
+          STDOUT.reopen(fd)
+          STDERR.reopen(fd)
+        end
+      end
+
       load_commands!
       load_room!
       drop_fbombs!
@@ -141,3 +173,6 @@ BEGIN{
   lib = File.join(libdir, 'fbomb.rb')
   require(test(?s, lib) ? lib : 'fbomb')
 }
+
+
+__END__
