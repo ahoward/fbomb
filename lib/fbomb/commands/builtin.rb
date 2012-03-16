@@ -268,6 +268,17 @@ FBomb {
 
 ##
 #
+  command(:meat){
+    call do |*args|
+      url = 'http://baconipsum.com/api/?type=meat-and-filler&paras=1'
+      data = `curl --silent #{ url.inspect }`
+      data.gsub!(/[\["\]]/, '')
+      speak(data)
+    end
+  }
+
+##
+#
   command(:pixtress){
     call do |*args|
       url = "http://pixtress.tumblr.com/random"
@@ -344,26 +355,17 @@ FBomb {
     end
   }
 
-  command(:boob){
+  command(:steve){
     setup{ require "google-search" }
 
-    urls = [
-      'http://i68.photobucket.com/albums/i23/jeff_bennion/Cracked/Underboobashx.jpg', 
-      'http://i68.photobucket.com/albums/i23/jeff_bennion/Cracked/under.jpg',
-      'http://i68.photobucket.com/albums/i23/jeff_bennion/Cracked/corsetlarge042.jpg',
-      'http://i68.photobucket.com/albums/i23/jeff_bennion/Cracked/HotCorset.jpg'
-    ]
-
     call do |*args|
-      if args.first == 'bomb'
-        n = Integer(args[1] || [3, rand(10)].max)
-        images = Google::Search::Image.new(:query => 'boobs', :image_size => :medium)
-        images = images.map{|result| result.uri}.uniq.sort_by{ rand }
-        n.times{ speak(msg = images.pop) }
-      else
-        speak(urls.sample)
-      end
+
+      images = Google::Search::Image.new(:query => 'pink+chaps', :image_size => :medium)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "Special delivery for Chaps Bailey!")
+      speak(msg = images.sample)
     end
   }
+
 }
 
