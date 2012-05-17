@@ -355,6 +355,8 @@ FBomb {
     end
   }
 
+##
+#
   command(:steve){
     setup{ require "google-search" }
 
@@ -367,5 +369,31 @@ FBomb {
     end
   }
 
+##
+#
+  command(:yoda){
+    call do |*args|
+      phrase = args.join(' ')
+      url = 'http://www.yodaspeak.co.uk/index.php'
+      error = nil
+
+      agent = Mechanize.new
+      agent.open_timeout = 240
+      agent.read_timeout = 240
+
+      page = agent.get(url)
+
+      form =
+        page.forms.detect{|form| form.fields.detect{|field| field.name == 'YodaMe'}}
+
+      form['YodaMe'] = phrase
+
+      result = form.submit
+
+      yoda_speak = result.search('textarea[name=YodaSpeak]').first.text
+
+      speak(yoda_speak)
+    end
+  }
 }
 
