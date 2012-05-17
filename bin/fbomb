@@ -120,6 +120,14 @@ Main {
       loop do
         logging_errors do
           Yajl::HttpStream.get(url) do |message|
+            FBomb.message = message
+
+            FBomb.messages.push(message)
+
+            while FBomb.messages.size > 1024
+              FBomb.messages.shift
+            end
+
             case message['type'].to_s
               when 'TextMessage'
                 body = message['body'].to_s

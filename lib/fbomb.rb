@@ -52,6 +52,12 @@
       FBomb.libdir{ libs.each{|lib| Kernel.load(lib) } }
     end
 
+    def messages
+      @messages ||= Array.new
+    end
+
+    attr_accessor :message
+
     extend(FBomb)
   end
 

@@ -373,26 +373,40 @@ FBomb {
 #
   command(:yoda){
     call do |*args|
-      phrase = args.join(' ')
+      phrase = args.join(' ').strip
       url = 'http://www.yodaspeak.co.uk/index.php'
       error = nil
 
-      agent = Mechanize.new
-      agent.open_timeout = 240
-      agent.read_timeout = 240
+      if phrase.empty?
+        phrase = most_recent_comment
+      end
 
-      page = agent.get(url)
+      if phrase
+        agent = Mechanize.new
+        agent.open_timeout = 240
+        agent.read_timeout = 240
 
-      form =
-        page.forms.detect{|form| form.fields.detect{|field| field.name == 'YodaMe'}}
+        catch(:done) do
+          2.times do
+            begin
+              page = agent.get(url)
 
-      form['YodaMe'] = phrase
+              form = page.forms.detect{|form| form.fields.detect{|field| field.name == 'YodaMe'}}
 
-      result = form.submit
+              form['YodaMe'] = phrase
 
-      yoda_speak = result.search('textarea[name=YodaSpeak]').first.text
+              result = form.submit
 
-      speak(yoda_speak)
+              yoda_speak = result.search('textarea[name=YodaSpeak]').first.text
+
+              speak("Yoda: #{ yoda_speak }")
+              throw(:done)
+            rescue Object
+              next
+            end
+          end
+        end
+      end
     end
   }
 }

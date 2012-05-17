@@ -127,6 +127,22 @@ module FBomb
       __
     end
 
+    def most_recent_comment
+      message =
+        catch(:message) do
+          FBomb.messages.reverse.each do |message|
+            next if message == FBomb.message
+
+            case message['type'].to_s
+              when 'TextMessage'
+                throw :message,  message
+            end
+          end
+          nil
+        end
+      message['body'] if message
+    end
+
 ## dsl
 #
     class DSL
