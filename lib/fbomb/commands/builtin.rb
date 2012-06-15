@@ -371,6 +371,19 @@ FBomb {
 
 ##
 #
+  command(:peter){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'girl from thundercats', :image_size => :medium)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "<3 <3 <3 first crush OMG!!1!")
+      speak(msg = images.sample)
+    end
+  }
+##
+#
   command(:yoda){
     call do |*args|
       phrase = args.join(' ').strip
