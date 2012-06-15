@@ -376,7 +376,7 @@ FBomb {
 
     call do |*args|
 
-      images = Google::Search::Image.new(:query => 'girl from thundercats', :image_size => :medium)
+      images = Google::Search::Image.new(:query => 'cheetara', :image_size => :medium)
       images = images.map{|result| result.uri}.uniq.sort_by{ rand }
       speak(msg = "<3 <3 <3 first crush OMG!!1!")
       speak(msg = images.sample)
