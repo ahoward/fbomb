@@ -362,9 +362,9 @@ FBomb {
 
     call do |*args|
 
-      images = Google::Search::Image.new(:query => 'pink+chaps', :image_size => :medium)
+      images = Google::Search::Image.new(:query => 'french+club', :image_size => :medium)
       images = images.map{|result| result.uri}.uniq.sort_by{ rand }
-      speak(msg = "Special delivery for Chaps Bailey!")
+      speak(msg = "Livraison spéciale pour Chaps Bailey!")
       speak(msg = images.sample)
     end
   }
