@@ -385,6 +385,20 @@ FBomb {
 
 ##
 #
+  command(:hug){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'fridayhug', :image_size => :medium)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "Sometimes you just need a hug...")
+      speak(msg = images.sample)
+    end
+  }
+
+##
+#
   command(:peter){
     setup{ require "google-search" }
 
