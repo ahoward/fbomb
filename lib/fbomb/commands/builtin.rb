@@ -371,6 +371,20 @@ FBomb {
 
 ##
 #
+  command(:yak){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'shaved+yak', :image_size => :medium)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "Sometimes you just need a really close shave...")
+      speak(msg = images.sample)
+    end
+  }
+
+##
+#
   command(:peter){
     setup{ require "google-search" }
 
