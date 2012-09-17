@@ -399,6 +399,20 @@ FBomb {
 
 ##
 #
+  command(:stokkepile){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'allison+stokke', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "Allison is here for yous...")
+      speak(msg = images.sample)
+    end
+  }
+
+##
+#
   command(:peter){
     setup{ require "google-search" }
 
