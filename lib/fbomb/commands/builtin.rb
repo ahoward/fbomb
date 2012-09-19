@@ -406,10 +406,25 @@ FBomb {
 
       images = Google::Search::Image.new(:query => 'allison+stokke', :image_size => :large)
       images = images.map{|result| result.uri}.uniq.sort_by{ rand }
-      speak(msg = "Allison is here for yous...")
+      speak(msg = "Allison is here for you...")
       speak(msg = images.sample)
     end
   }
+
+##
+#
+  command(:perfectlytimed){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'perfectly+timed+photos', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "Shazam!")
+      speak(msg = images.sample)
+    end
+  }
+
 
 ##
 #
