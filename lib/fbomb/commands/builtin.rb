@@ -424,7 +424,7 @@ FBomb {
       addressee = nil
       confession = nil
       doc = Nokogiri::HTML(html)
-      doc.xpath('//article#{ id }').each do |node|
+      doc.xpath('//article[@id="article#{ id }"]').each do |node|
         node.search('//h1').each do |heading|
           head = heading.text
           addressee = head
