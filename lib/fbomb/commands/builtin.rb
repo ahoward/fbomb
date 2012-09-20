@@ -397,19 +397,6 @@ FBomb {
     end
   }
 
-##
-#
-  command(:stokkepile){
-    setup{ require "google-search" }
-
-    call do |*args|
-
-      images = Google::Search::Image.new(:query => 'allison+stokke', :image_size => :large)
-      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
-      speak(msg = "Allison is here for you...")
-      speak(msg = images.sample)
-    end
-  }
 
 ##
 #
@@ -425,6 +412,39 @@ FBomb {
     end
   }
 
+##
+#
+  command(:letter) {
+    call do |*args|
+      url = "http://s3.amazonaws.com/dojo4/letters/index.html"
+      cmd = "curl --location --silent #{ url.inspect }"
+      html = `#{ cmd }`
+      doc = Nokogiri::HTML(html)
+      msg = nil
+      doc.xpath('//article').each do |node|
+        text = node.text
+        msg = text
+      end
+      speak(msg.sample) if msg
+    end
+  }
+
+##
+#
+  command(:quote) {
+    call do |*args|
+      url = "http://iheartquotes.com/api/v1/random?format=html&max_lines=4&max_characters=420"
+      html = `curl --location --silent #{ url.inspect }`
+      doc = Nokogiri::HTML(html)
+      msg = nil
+      #<a target="_parent" href='http://iheartquotes.com/fortune/show/victory_uber_allies_'>Victory uber allies!</a>
+      doc.xpath('//div[@class="rbcontent"]/a').each do |node|
+        text = node.text
+        msg = text
+      end
+      speak(msg) if msg
+    end
+  }
 
 ##
 #
