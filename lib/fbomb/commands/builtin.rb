@@ -191,6 +191,7 @@ FBomb {
       url = "http://quotesondesign.com"
       cmd = "curl --location --silent #{ url.inspect }"
       html = `#{ cmd  }`
+      id = rand(10)
       doc = Nokogiri::HTML(html)
       msg = nil
       doc.xpath('//div').each do |node|
@@ -414,18 +415,25 @@ FBomb {
 
 ##
 #
-  command(:letter) {
+  command(:confession) {
     call do |*args|
-      url = "http://s3.amazonaws.com/dojo4/letters/index.html"
+      url = "http://s3.amazonaws.com/dojo4/confessions/index.html"
       cmd = "curl --location --silent #{ url.inspect }"
+      id = 1 + rand(6)
+      addressee = nil
+      msg = nil
       html = `#{ cmd }`
       doc = Nokogiri::HTML(html)
-      msg = nil
-      doc.xpath('//article').each do |node|
+      doc.xpath('//article[@id="article#{ id }"]/h1').each do |node|
+        head = node.text
+        addressee = head
+      end
+      doc.xpath('//article[@id="article#{ id }"]/p').each do |node|
         text = node.text
         msg = text
       end
-      speak(msg.sample) if msg
+      speak(addressee) if addressee
+      speak(msg) if msg
     end
   }
 
