@@ -419,21 +419,23 @@ FBomb {
     call do |*args|
       url = "http://s3.amazonaws.com/dojo4/confessions/index.html"
       cmd = "curl --location --silent #{ url.inspect }"
+      html = "#{ cmd }"
       id = 1 + rand(6)
       addressee = nil
-      msg = nil
-      html = `#{ cmd }`
+      confession = nil
       doc = Nokogiri::HTML(html)
-      doc.xpath('//article[@id="article#{ id }"]/h1').each do |node|
-        head = node.text
-        addressee = head
-      end
-      doc.xpath('//article[@id="article#{ id }"]/p').each do |node|
-        text = node.text
-        msg = text
+      doc.xpath('//article').each do |node|
+        node.search('//h1').each do |heading|
+          head = heading.text
+          addressee = head
+        end
+        node.search('//p').each do |text|
+          msg = node.text
+          confession = msg
+        end
       end
       speak(addressee) if addressee
-      speak(msg) if msg
+      speak(confession) if confession
     end
   }
 
