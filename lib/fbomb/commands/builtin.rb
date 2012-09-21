@@ -417,23 +417,15 @@ FBomb {
 #
   command(:confession) {
     call do |*args|
-      url = "http://s3.amazonaws.com/dojo4/confessions/index.html"
+      url = "http://dj4confessions.wordpress.com/"
       html = `curl --location --silent #{ url.inspect }`
       doc = Nokogiri::HTML(html)
-      articles = doc.xpath('//article')
-      random = articles.to_a.sample
-      addressee = random.css('h1').text.strip.upcase
-      confession = random.css('p').text.strip
-      # doc.xpath('//article[@id="article#{ id }"]').each do |node|
-      #   node.search('//h1').each do |heading|
-      #     head = heading.text
-      #     addressee = head
-      #   end
-      #   node.search('//p').each do |text|
-      #     msg = node.text
-      #     confession = msg
-      #   end
-      # end
+      articles = doc.xpath("//article")
+      # articles = doc.xpath("//*[contains(concat(' ', @class, ' '), ' hentry ')]")
+      latest = articles.to_a.first(10)
+      article = latest.sample
+      addressee = article.css('header h1').text.strip.upcase
+      confession = article.css('div.entry-content p').text.strip
       speak(addressee) if addressee
       speak(confession) if confession
     end
