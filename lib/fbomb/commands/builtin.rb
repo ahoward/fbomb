@@ -418,22 +418,22 @@ FBomb {
   command(:confession) {
     call do |*args|
       url = "http://s3.amazonaws.com/dojo4/confessions/index.html"
-      cmd = "curl --location --silent #{ url.inspect }"
-      html = "#{ cmd }"
-      id = 1 + rand(6)
-      addressee = nil
-      confession = nil
+      html = `curl --location --silent #{ url.inspect }`
       doc = Nokogiri::HTML(html)
-      doc.xpath('//article[@id="article#{ id }"]').each do |node|
-        node.search('//h1').each do |heading|
-          head = heading.text
-          addressee = head
-        end
-        node.search('//p').each do |text|
-          msg = node.text
-          confession = msg
-        end
-      end
+      articles = doc.xpath('//article')
+      random = articles.to_a.sample
+      addressee = random.css('h1').text.strip.upcase
+      confession = random.css('p').text.strip
+      # doc.xpath('//article[@id="article#{ id }"]').each do |node|
+      #   node.search('//h1').each do |heading|
+      #     head = heading.text
+      #     addressee = head
+      #   end
+      #   node.search('//p').each do |text|
+      #     msg = node.text
+      #     confession = msg
+      #   end
+      # end
       speak(addressee) if addressee
       speak(confession) if confession
     end
