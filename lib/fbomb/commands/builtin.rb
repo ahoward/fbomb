@@ -422,10 +422,13 @@ FBomb {
       doc = Nokogiri::HTML(html)
       articles = doc.xpath("//article")
       # articles = doc.xpath("//*[contains(concat(' ', @class, ' '), ' hentry ')]")
-      latest = articles.to_a.first(10)
+      latest = articles.to_a.first(7)
       article = latest.sample
       addressee = article.css('header h1').text.strip.upcase
-      confession = article.css('div.entry-content p').text.strip
+      confession = article.css('.entry-content p').text.strip
+      image = article.css('.entry-content img').collect{|i| i.get_attribute('src')}
+      require 'pry'; binding.pry
+      speak(image) if image
       speak(addressee) if addressee
       speak(confession) if confession
     end
