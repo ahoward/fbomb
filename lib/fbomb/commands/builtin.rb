@@ -386,6 +386,20 @@ FBomb {
 
 ##
 #
+  command(:endoftheworld){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'mayan+apocalypse', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "It's the end of the world as we know it...")
+      speak(msg = images.sample)
+    end
+  }
+
+##
+#
   command(:hug){
     setup{ require "google-search" }
 
