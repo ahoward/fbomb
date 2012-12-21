@@ -391,7 +391,7 @@ FBomb {
 
     call do |*args|
 
-      images = Google::Search::Image.new(:query => 'mayan+apocalypse', :image_size => :large)
+      images = Google::Search::Image.new(:query => 'mayan+apocalypse+2012', :image_size => :large)
       images = images.map{|result| result.uri}.uniq.sort_by{ rand }
       speak(msg = "It's the end of the world as we know it...")
       speak(msg = images.sample)
