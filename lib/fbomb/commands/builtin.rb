@@ -434,7 +434,7 @@ FBomb {
 
     call do |*args|
 
-      images = Google::Search::Image.new(:query => 'octocat', :image_size => :large)
+      images = Google::Search::Image.new(:query => 'octocat+github', :image_size => :large)
       images = images.map{|result| result.uri}.uniq.sort_by{ rand }
       speak(msg = "Purrrrrrrr...")
       speak(msg = images.sample)
