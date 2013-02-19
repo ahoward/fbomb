@@ -451,7 +451,7 @@ FBomb {
       images = Google::Search::Image.new(:query => 'github+ship+it+squirrel', :image_size => :large)
       images = images.map{|result| result.uri}.uniq.sort_by{ rand }
       speak(msg = "Ship it already!")
-      speak(msg = images.sample)
+      speak(msg = "#{images.sample}#.png")
     end
   }
 
