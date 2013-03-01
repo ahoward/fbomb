@@ -443,6 +443,19 @@ FBomb {
 
 ##
 #
+  command(:goodnews){
+    setup{ require "google-search" }
+
+    call do |*args|
+      images = Google::Search::Image.new(:query => 'good+news+everyone+futurama', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = images.sample)
+      speak(msg = args.join(" "))
+    end
+  }
+
+##
+#
   command(:ship_it){
     setup{ require "google-search" }
 
