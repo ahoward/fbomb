@@ -423,11 +423,13 @@ FBomb {
       articles = doc.xpath("//article")
       # articles = doc.xpath("//*[contains(concat(' ', @class, ' '), ' hentry ')]")
       latest = articles.to_a.first(15)
-      article = latest.sample
+      r = 1 + rand(14)
+      article = latest[r]
       addressee = article.css('header h1').text.strip.upcase
       confession = article.css('.entry-content p').text.strip
       getimgsrc = article.css('.entry-content img').collect{|i| i.get_attribute('src')}
       image = getimgsrc.first
+      require 'pry'; binding.pry
       speak(image) if image
       speak(addressee) if addressee
       speak(confession) if confession
