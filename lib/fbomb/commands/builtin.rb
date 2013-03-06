@@ -429,7 +429,6 @@ FBomb {
       confession = article.css('.entry-content p').text.strip
       getimgsrc = article.css('.entry-content img').collect{|i| i.get_attribute('src')}
       image = getimgsrc.first
-      require 'pry'; binding.pry
       speak(image) if image
       speak(addressee) if addressee
       speak(confession) if confession
