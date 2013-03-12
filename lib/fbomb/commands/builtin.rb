@@ -560,5 +560,18 @@ FBomb {
       end
     end
   }
+
+##
+#
+  command(:poop){
+    setup{ require "google-search" }
+
+    call do |*args|
+      images = Google::Search::Image.new(:query => 'poop', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "coffee anyone?")
+      speak(msg = images.sample)
+    end
+  }
 }
 
