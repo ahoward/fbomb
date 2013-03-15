@@ -267,6 +267,19 @@ FBomb {
     end
   }
 
+  command(:certified) {
+    call do |*args|
+      urls = %w(
+        http://blog.pravesh.me/files/2012/08/worksonmymachine.jpg
+        http://4.bp.blogspot.com/_CywCAU4HORs/S-HYtX4vOkI/AAAAAAAAAHw/Hzi5PYZOkrg/s320/ItWorksOnMyMachine.jpg
+        http://people.scs.carleton.ca/~mvvelzen/pH/works-on-my-machine-stamped.png
+        http://cdn.memegenerator.net/instances/400x/24722869.jpg
+        http://sd.keepcalm-o-matic.co.uk/i/keep-calm-it-works-on-my-machine.png
+      )
+      speak(urls[rand(urls.size)])
+    end
+  }
+
 ##
 #
   command(:meat){
