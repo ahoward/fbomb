@@ -4,7 +4,7 @@ FBomb {
 #
   command(:reload){
     help 'reload fbomb commands'
-    
+
     call do |*args|
       FBomb::Command.table = FBomb::Command::Table.new
       FBomb::Command.load(Command.command_paths)
@@ -13,7 +13,7 @@ FBomb {
   }
 
 ##
-#  
+#
   command(:rhymeswith) {
     help 'show ryhming words'
 
@@ -92,7 +92,7 @@ FBomb {
       speak(msg) unless msg.empty?
     end
   }
-  
+
 ##
 #
   command(:fail){
@@ -119,7 +119,7 @@ FBomb {
       speak(msg) unless msg.empty?
     end
   }
-  
+
 ##
 #
   command(:gist) {
@@ -351,9 +351,10 @@ FBomb {
     setup{ require "google-search" }
 
     urls = [
-      'http://ficdn.fashionindie.com/wp-content/uploads/2010/04/exterface_unicorn_03.jpg', 
+      'http://ficdn.fashionindie.com/wp-content/uploads/2010/04/exterface_unicorn_03.jpg',
       'http://fc04.deviantart.net/fs51/f/2009/281/a/7/White_Unicorn_My_Little_Pony_by_Barkingmadd.jpg',
       'http://th54.photobucket.com/albums/g119/jasonjmore/th_UnicornPeeingRainbow.jpg',
+      'https://dojo4.campfirenow.com/room/279627/uploads/4343363/unicornattack11.png',
       'http://th242.photobucket.com/albums/ff99/1010496/th_unicornpr0n.gif'
     ]
 
