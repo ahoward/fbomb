@@ -355,6 +355,7 @@ FBomb {
       'http://fc04.deviantart.net/fs51/f/2009/281/a/7/White_Unicorn_My_Little_Pony_by_Barkingmadd.jpg',
       'http://th54.photobucket.com/albums/g119/jasonjmore/th_UnicornPeeingRainbow.jpg',
       'https://dojo4.campfirenow.com/room/279627/uploads/4343363/unicornattack11.png',
+      'https://dojo4.campfirenow.com/room/279627/uploads/4343762/spirit-animal.jpg',
       'http://th242.photobucket.com/albums/ff99/1010496/th_unicornpr0n.gif'
     ]
 
