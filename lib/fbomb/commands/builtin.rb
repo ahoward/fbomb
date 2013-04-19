@@ -422,8 +422,8 @@ FBomb {
       doc = Nokogiri::HTML(html)
       articles = doc.xpath("//article")
       # articles = doc.xpath("//*[contains(concat(' ', @class, ' '), ' hentry ')]")
-      latest = articles.to_a.first(15)
-      r = 1 + rand(14)
+      latest = articles.to_a.first(14)
+      r = rand(14)
       article = latest[r]
       addressee = article.css('header h1').text.strip.upcase
       confession = article.css('.entry-content p').text.strip
