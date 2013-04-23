@@ -2,6 +2,20 @@ FBomb {
 
 ##
 #
+  command(:torch){
+    help 'fire me up'
+
+    call do |*args|
+      data = `curl --silent -d "" http://michaelthompson.org/unix/flamer.php`
+      re = %r|<pre>(.*)</pre>|m
+      flame = re.match(data)[1].sub(/^\s+/, '  ')
+      speak(flame)
+    end
+  }
+}
+
+##
+#
   command(:reload){
     help 'reload fbomb commands'
 
