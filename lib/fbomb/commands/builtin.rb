@@ -12,7 +12,6 @@ FBomb {
       speak(flame)
     end
   }
-}
 
 ##
 #
