@@ -15,6 +15,28 @@ FBomb {
 
 ##
 #
+  command(:elevator){
+    help "Give me the pitch."
+
+    call do |*args| 
+      message = [
+        "We're %s %s.",
+        "I said \"%s %s\" and the room got really quiet.",
+        "We are going after a billion-dollar market with %s %s.",
+        "If you can't sell %s %s, you can't sell anything."
+      ].sort_by { rand }.first
+      
+      description = `curl --silent 'http://itsthisforthat.com/api.php?text'`
+      re = %r|So, Basically, It's Like A (.*)\.|
+      description.sub!(/^So, Basically, It's Like A /, '').chomp!(".")
+
+      article = description[0] =~ /^[aeiou]/i ? 'an' : 'a'
+
+      speak(format(message, article, description))
+    end
+  }
+##
+#
   command(:reload){
     help 'reload fbomb commands'
 
