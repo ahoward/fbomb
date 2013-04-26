@@ -1,15 +1,17 @@
 FBomb {
 
+
 ##
 #
-  command(:torch){
-    help 'fire me up'
+  command(:chuckle) {
+    help "Ha ha, very funny."
+    setup{ require "google-search" }
 
     call do |*args|
-      data = `curl --silent -d "" http://michaelthompson.org/unix/flamer.php`
-      re = %r|<pre>(.*)</pre>|m
-      flame = re.match(data)[1].sub(/^\s+/, '  ')
-      speak(flame)
+      uris = []
+      images = Google::Search::Image.new(:query => 'funny', :image_size => :large)
+      images.each { |result| uris << result.uri }
+      speak(uris.sort_by { rand }.first)
     end
   }
 
@@ -23,7 +25,8 @@ FBomb {
         "We're %s %s.",
         "I said \"%s %s\" and the room got really quiet.",
         "We are going after a billion-dollar market with %s %s.",
-        "If you can't sell %s %s, you can't sell anything."
+        "If you can't sell %s %s, you can't sell anything.",
+        "I've got it! \"Sometimes you feel like a nut, sometimes you're %s %s.\""
       ].sort_by { rand }.first
       
       description = `curl --silent 'http://itsthisforthat.com/api.php?text'`
