@@ -9,7 +9,7 @@ FBomb {
 
     call do |*args|
       uris = []
-      images = Google::Search::Image.new(:query => 'funny', :image_size => :large)
+      images = Google::Search::Image.new(:query => 'funny safety signs', :image_size => :medium)
       images.each { |result| uris << result.uri }
       speak(uris.sort_by { rand }.first)
     end
