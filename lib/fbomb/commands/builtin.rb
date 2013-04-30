@@ -20,7 +20,7 @@ FBomb {
   command(:elevator){
     help "Give me the pitch."
 
-    call do |*args| 
+    call do |*args|
       message = [
         "We're %s %s.",
         "I said \"%s %s\" and the room got really quiet.",
@@ -28,7 +28,7 @@ FBomb {
         "If you can't sell %s %s, you can't sell anything.",
         "I've got it! \"Sometimes you feel like a nut, sometimes you're %s %s.\""
       ].sort_by { rand }.first
-      
+
       description = `curl --silent 'http://itsthisforthat.com/api.php?text'`
       re = %r|So, Basically, It's Like A (.*)\.|
       description.sub!(/^So, Basically, It's Like A /, '').chomp!(".")
@@ -447,6 +447,17 @@ FBomb {
       images = Google::Search::Image.new(:query => 'end+of+the+world+2012', :image_size => :large)
       images = images.map{|result| result.uri}.uniq.sort_by{ rand }
       speak(msg = "It's the end of the world as we know it...")
+      speak(msg = images.sample)
+    end
+  }
+
+##
+#
+  command(:cookingwithgas) {
+    call do |*args|
+      images = Google::Search::Image.new(:query => 'cooking+with+gas+explosion', :image_size => :large)
+      images = images.map { |result| result.uri}.uniq.sort_by { rand }
+      speak(msg = "Now we are cooking with gas!")
       speak(msg = images.sample)
     end
   }
