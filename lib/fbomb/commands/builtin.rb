@@ -584,6 +584,21 @@ FBomb {
       speak(msg = images.sample)
     end
   }
+
+##
+#
+  command(:movime){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'bovine', :image_size => :medium)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "Rhymes with Bovine")
+      speak(msg = images.sample)
+    end
+  }
+
 ##
 #
   command(:yoda){
