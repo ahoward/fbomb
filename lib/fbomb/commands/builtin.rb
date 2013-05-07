@@ -601,6 +601,20 @@ FBomb {
 
 ##
 #
+  command(:ecard){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'ecard', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "I was just thinking of you and...")
+      speak(msg = images.sample)
+    end
+  }
+
+##
+#
   command(:yoda){
     call do |*args|
       phrase = args.join(' ').strip
