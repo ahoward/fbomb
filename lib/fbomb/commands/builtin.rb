@@ -606,7 +606,7 @@ FBomb {
 
     call do |*args|
 
-      images = Google::Search::Image.new(:query => 'ecard+site:someecard.com', :image_size => :large)
+      images = Google::Search::Image.new(:query => 'ecard', :image_size => :large, :site => 'someecards.com')
       images = images.map{|result| result.uri}.uniq.sort_by{ rand }
       speak(msg = "I was just thinking of you and...")
       speak(msg = images.sample)
