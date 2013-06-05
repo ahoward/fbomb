@@ -666,5 +666,14 @@ FBomb {
       speak(msg = images.sample)
     end
   }
+
+  command(:itshappening){
+
+    call do |*args|
+      speak(msg = "What's happening?")
+      speak(msg = "http://i.imgur.com/vwMin.gif")
+    end
+  }
+
 }
 
