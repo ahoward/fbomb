@@ -335,6 +335,7 @@ FBomb {
     call do |*args|
       url = "http://pixtress.tumblr.com/random"
       error = nil
+      retries = 0
 
       4.times do
         begin
@@ -369,7 +370,10 @@ FBomb {
 
           break
         rescue Object => error
-          retry
+          if retries < 8
+            retries += 1
+            retry
+          end
         end
       end
 
