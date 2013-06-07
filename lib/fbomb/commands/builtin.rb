@@ -369,7 +369,7 @@ FBomb {
 
           break
         rescue Object => error
-          :retry
+          retry
         end
       end
 
