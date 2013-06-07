@@ -354,10 +354,11 @@ FBomb {
               image = agent.get(src)
 
               Util.tmpdir do
-                open(image.filename, 'w'){|fd| fd.write(image.body)}
+                filename = image.filename.split(/_AWS/).first
+                open(filename, 'w'){|fd| fd.write(image.body)}
 
                 url = File.join(room.url, "uploads.xml")
-                cmd = "curl -Fupload=@#{ image.filename.inspect } #{ url.inspect }#.jpg"
+                cmd = "curl -Fupload=@#{ filename.inspect } #{ url.inspect }"
                 system(cmd)
                 speak(alt)
               end
