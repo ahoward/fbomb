@@ -341,6 +341,7 @@ FBomb {
           agent = Mechanize.new
           agent.open_timeout = 240
           agent.read_timeout = 240
+          agent.request_headers = { 'Referer' => 'http://pixtress.tumbler.com/' }
 
           page = agent.get(url)
 
@@ -356,7 +357,7 @@ FBomb {
                 open(image.filename, 'w'){|fd| fd.write(image.body)}
 
                 url = File.join(room.url, "uploads.xml")
-                cmd = "curl -Fupload=@#{ image.filename.inspect } #{ url.inspect }"
+                cmd = "curl -Fupload=@#{ image.filename.inspect } #{ url.inspect }#.jpg"
                 system(cmd)
                 speak(alt)
               end
