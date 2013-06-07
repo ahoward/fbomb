@@ -341,7 +341,6 @@ FBomb {
           agent = Mechanize.new
           agent.open_timeout = 240
           agent.read_timeout = 240
-          agent.request_headers = { 'Referer' => 'http://pixtress.tumbler.com/' }
 
           page = agent.get(url)
 
@@ -351,6 +350,7 @@ FBomb {
               alt = img['alt']
               url = src
 
+              agent.request_headers = { 'Referer' => 'http://pixtress.tumbler.com/' }
               image = agent.get(src)
 
               Util.tmpdir do
