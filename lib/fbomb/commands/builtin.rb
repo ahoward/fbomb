@@ -683,8 +683,11 @@ FBomb {
 
   command(:party){
     call do |*args|
+      count = args.include?("bomb") ? rand(10) : 1
       speak(msg = "It's a partay!")
-      speak(msg = "https://dojo4.campfirenow.com/room/279627/uploads/4580533/ara.gif")
+      count.times do
+        speak(msg = "https://dojo4.campfirenow.com/room/279627/uploads/4580533/ara.gif")
+      end
     end
   }
 
