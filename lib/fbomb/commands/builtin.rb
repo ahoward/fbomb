@@ -681,5 +681,12 @@ FBomb {
     end
   }
 
+  command(:party){
+    call do |*args|
+      speak(msg = "It's a partay!")
+      speak(msg = "https://dojo4.campfirenow.com/room/279627/uploads/4580533/ara.gif")
+    end
+  }
+
 }
 
