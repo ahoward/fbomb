@@ -691,5 +691,12 @@ FBomb {
     end
   }
 
+  command(:willis){
+    call do |*args|
+      speak(msg = "Whatchu talkin bout Willis?")
+      speak(msg = "http://media.tumblr.com/tumblr_lpzmqsohLJ1qi7mx3.gif")  
+    end
+  }
+
 }
 
