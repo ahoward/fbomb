@@ -706,5 +706,14 @@ FBomb {
     end
   }
 
+  command(:fred){
+    call do |*args|
+      count = args.include?("bomb") ? rand(10) : 1
+      speak(msg = "It's a partay!")
+      count.times do
+        speak(msg = "http://sidestep.fredjean.net/fred.jpg")
+      end
+    end
+  }
 }
 
