@@ -694,7 +694,7 @@ FBomb {
   command(:willis){
     call do |*args|
       speak(msg = "Whatchu talkin bout Willis?")
-      speak(msg = "http://media.tumblr.com/tumblr_lpzmqsohLJ1qi7mx3.gif")  
+      speak(msg = "http://media.tumblr.com/tumblr_lpzmqsohLJ1qi7mx3.gif")
     end
   }
 
@@ -712,6 +712,16 @@ FBomb {
       speak(msg = "It's a partay!")
       count.times do
         speak(msg = "http://sidestep.fredjean.net/fred.jpg")
+      end
+    end
+  }
+
+  command(:ara){
+    call do |*args|
+      count = args.include?("bomb") ? rand(10) : 1
+      speak(msg = "Is a CTO a Rails dev?")
+      count.times do
+        speak(msg = "https://dojo4.campfirenow.com/room/279627/uploads/4619032/wonder-woman3.jpg")
       end
     end
   }
