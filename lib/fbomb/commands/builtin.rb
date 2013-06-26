@@ -1,5 +1,34 @@
 FBomb {
 
+##
+#
+  command(:planet) {
+    help "With me you will take off.  http://imgur.com/a/Ilw2G."
+
+    call do |*args|
+      basenames = %w[
+        1dEzGbz.jpg
+        3aASzbv.jpg
+        BCfEwgl.jpg
+        EPbgqjy.jpg
+        FoiDgwc.jpg
+        HJiUPV2.jpg
+        KOcvGjw.jpg
+        L5n5lPK.jpg
+        MaGKipv.jpg
+        nWqdkF7.jpg
+        QVRALtz.jpg
+        W3fWkTZ.jpg
+        w41sv1T.jpg
+        xySa4GD.jpg
+        yzw8pOQ.jpg
+      ]
+
+      basename = basenames.sort_by{ rand }.first
+      url = File.join('https://raw.github.com/ahoward/fbomb/master/images/planet', basename)
+      speak(url)
+    end
+  }
 
 ##
 #
