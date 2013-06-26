@@ -698,5 +698,13 @@ FBomb {
     end
   }
 
+  command(:miles){
+    call do |*args|
+      images = Google::Search::Image.new(:query => 'miles matthias', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = images.sample)
+    end
+  }
+
 }
 
