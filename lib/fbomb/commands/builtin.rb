@@ -762,5 +762,17 @@ FBomb {
       end
     end
   }
+
+  command(:lunch){
+    help "Get lunch recommendations near the dojo4 office"
+
+    call do |*args|
+      restaurants = Google::Search::Local.new(:query => 'lunch near 2030 17th Street Boulder, CO 80302')
+      restaurants = restaurants.map{|result| result.title}.uniq.sort_by{ rand }
+      speak(msg = "Why not try...")
+      speak(msg = restaurants.sample)
+      speak(msg = " instead of crap.")
+    end
+  }
 }
 
