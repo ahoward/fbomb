@@ -742,6 +742,14 @@ FBomb {
       speak(msg = images.sample)
     end
   }
+  
+  command(:harlemshake){
+    call do |*args|
+      images = Google::Search::Image.new(:query => 'harlem shake gif', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = images.sample)
+    end
+  }
 
   command(:fred){
     call do |*args|
