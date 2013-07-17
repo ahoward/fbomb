@@ -75,7 +75,7 @@ FBomb {
     call do |*args|
       FBomb::Command.table = FBomb::Command::Table.new
       FBomb::Command.load(Command.command_paths)
-      speak('locked and loaded.')
+      speak('locked, cocked, and read to rock.')
     end
   }
 
