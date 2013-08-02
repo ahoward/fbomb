@@ -8,7 +8,7 @@ FBomb {
     call do |*args|
       FBomb::Command.table = FBomb::Command::Table.new
       FBomb::Command.load(Command.command_paths)
-      speak('locked and loaded.')
+      speak('YOU MUST BE OVER 18 TO ENTER THIS SITE')
     end
   }
 
@@ -422,7 +422,7 @@ FBomb {
       doc = Nokogiri::HTML(html)
       articles = doc.xpath("//article")
       # articles = doc.xpath("//*[contains(concat(' ', @class, ' '), ' hentry ')]")
-      latest = articles.to_a.first(14)
+      latest = articles.to_a
       r = rand(14)
       article = latest[r]
       addressee = article.css('header h1').text.strip.upcase
