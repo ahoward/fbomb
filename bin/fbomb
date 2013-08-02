@@ -55,7 +55,7 @@ Main {
       require 'pry'
       Pry.hooks[:before_session] = proc{}
       prompt = "#{ config.campfire.domain }[#{ config.campfire.room }] >> "
-      Pry.config.prompt = proc{|*a| prompt } 
+      Pry.config.prompt = proc{|*a| prompt }
       binding.pry
     end
 
@@ -180,6 +180,16 @@ BEGIN{
   libdir = File.join(srcdir, 'lib')
   lib = File.join(libdir, 'fbomb.rb')
   require(test(?s, lib) ? lib : 'fbomb')
+
+
+  class Map
+    def slice(*keys)
+      keys = keys.map! { |key| convert_key(key) } if respond_to?(:convert_key, true)
+      hash = self.class.new
+      keys.each { |k| hash[k] = self[k] if has_key?(k) }
+      hash
+    end
+  end
 }
 
 

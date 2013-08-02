@@ -2,9 +2,76 @@ FBomb {
 
 ##
 #
+  command(:planet) {
+    help "With me you will take off.  http://imgur.com/a/Ilw2G."
+
+    call do |*args|
+      basenames = %w[
+        1dEzGbz.jpg
+        3aASzbv.jpg
+        BCfEwgl.jpg
+        EPbgqjy.jpg
+        FoiDgwc.jpg
+        HJiUPV2.jpg
+        KOcvGjw.jpg
+        L5n5lPK.jpg
+        MaGKipv.jpg
+        nWqdkF7.jpg
+        QVRALtz.jpg
+        W3fWkTZ.jpg
+        w41sv1T.jpg
+        xySa4GD.jpg
+        yzw8pOQ.jpg
+      ]
+
+      basename = basenames.sort_by{ rand }.first
+      url = File.join('https://raw.github.com/ahoward/fbomb/master/images/planet', basename)
+      speak(url)
+    end
+  }
+
+##
+#
+  command(:chuckle) {
+    help "Ha ha, very funny."
+    setup{ require "google-search" }
+
+    call do |*args|
+      uris = []
+      images = Google::Search::Image.new(:query => 'funny safety signs', :image_size => :medium)
+      images.each { |result| uris << result.uri }
+      speak(uris.sort_by { rand }.first)
+    end
+  }
+
+##
+#
+  command(:elevator){
+    help "Give me the pitch."
+
+    call do |*args|
+      message = [
+        "We're %s %s.",
+        "I said \"%s %s\" and the room got really quiet.",
+        "We are going after a billion-dollar market with %s %s.",
+        "If you can't sell %s %s, you can't sell anything.",
+        "I've got it! \"Sometimes you feel like a nut, sometimes you're %s %s.\""
+      ].sort_by { rand }.first
+
+      description = `curl --silent 'http://itsthisforthat.com/api.php?text'`
+      re = %r|So, Basically, It's Like A (.*)\.|
+      description.sub!(/^So, Basically, It's Like A /, '').chomp!(".")
+
+      article = description[0] =~ /^[aeiou]/i ? 'an' : 'a'
+
+      speak(format(message, article, description))
+    end
+  }
+##
+#
   command(:reload){
     help 'reload fbomb commands'
-    
+
     call do |*args|
       FBomb::Command.table = FBomb::Command::Table.new
       FBomb::Command.load(Command.command_paths)
@@ -13,7 +80,7 @@ FBomb {
   }
 
 ##
-#  
+#
   command(:rhymeswith) {
     help 'show ryhming words'
 
@@ -92,7 +159,7 @@ FBomb {
       speak(msg) unless msg.empty?
     end
   }
-  
+
 ##
 #
   command(:fail){
@@ -119,7 +186,7 @@ FBomb {
       speak(msg) unless msg.empty?
     end
   }
-  
+
 ##
 #
   command(:gist) {
@@ -267,6 +334,19 @@ FBomb {
     end
   }
 
+  command(:certified) {
+    call do |*args|
+      urls = %w(
+        http://blog.pravesh.me/files/2012/08/worksonmymachine.jpg
+        http://4.bp.blogspot.com/_CywCAU4HORs/S-HYtX4vOkI/AAAAAAAAAHw/Hzi5PYZOkrg/s320/ItWorksOnMyMachine.jpg
+        http://people.scs.carleton.ca/~mvvelzen/pH/works-on-my-machine-stamped.png
+        http://cdn.memegenerator.net/instances/400x/24722869.jpg
+        http://sd.keepcalm-o-matic.co.uk/i/keep-calm-it-works-on-my-machine.png
+      )
+      speak(urls[rand(urls.size)])
+    end
+  }
+
 ##
 #
   command(:meat){
@@ -284,6 +364,7 @@ FBomb {
     call do |*args|
       url = "http://pixtress.tumblr.com/random"
       error = nil
+      retries = 0
 
       4.times do
         begin
@@ -299,13 +380,15 @@ FBomb {
               alt = img['alt']
               url = src
 
+              agent.request_headers = { 'Referer' => 'http://pixtress.tumbler.com/' }
               image = agent.get(src)
 
               Util.tmpdir do
-                open(image.filename, 'w'){|fd| fd.write(image.body)}
+                filename = image.filename.split(/_AWS/).first
+                open(filename, 'w'){|fd| fd.write(image.body)}
 
                 url = File.join(room.url, "uploads.xml")
-                cmd = "curl -Fupload=@#{ image.filename.inspect } #{ url.inspect }"
+                cmd = "curl -Fupload=@#{ filename.inspect } #{ url.inspect }"
                 system(cmd)
                 speak(alt)
               end
@@ -316,7 +399,10 @@ FBomb {
 
           break
         rescue Object => error
-          :retry
+          if retries < 8
+            retries += 1
+            retry
+          end
         end
       end
 
@@ -338,9 +424,11 @@ FBomb {
     setup{ require "google-search" }
 
     urls = [
-      'http://ficdn.fashionindie.com/wp-content/uploads/2010/04/exterface_unicorn_03.jpg', 
+      'http://dbprng00ikc2j.cloudfront.net/work/image/390379/d14s2l/20101223063430-exterface_unicorn_03.jpg',
       'http://fc04.deviantart.net/fs51/f/2009/281/a/7/White_Unicorn_My_Little_Pony_by_Barkingmadd.jpg',
       'http://th54.photobucket.com/albums/g119/jasonjmore/th_UnicornPeeingRainbow.jpg',
+      'https://dojo4.campfirenow.com/room/279627/uploads/4343363/unicornattack11.png',
+      'https://dojo4.campfirenow.com/room/279627/uploads/4343762/spirit-animal.jpg',
       'http://th242.photobucket.com/albums/ff99/1010496/th_unicornpr0n.gif'
     ]
 
@@ -386,6 +474,31 @@ FBomb {
 
 ##
 #
+  command(:endoftheworld){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'end+of+the+world+2012', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "It's the end of the world as we know it...")
+      speak(msg = images.sample)
+    end
+  }
+
+##
+#
+  command(:cookingwithgas) {
+    call do |*args|
+      images = Google::Search::Image.new(:query => 'cooking+with+gas+explosion', :image_size => :large)
+      images = images.map { |result| result.uri}.uniq.sort_by { rand }
+      speak(msg = "Now we are cooking with gas!")
+      speak(msg = images.sample)
+    end
+  }
+
+##
+#
   command(:hug){
     setup{ require "google-search" }
 
@@ -410,6 +523,47 @@ FBomb {
       images = images.map{|result| result.uri}.uniq.sort_by{ rand }
       speak(msg = "Shazam!")
       speak(msg = images.sample)
+    end
+  }
+
+##
+#
+  command(:octocat){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'octocat+github', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "Purrrrrrrr...")
+      speak(msg = images.sample)
+    end
+  }
+
+##
+#
+  command(:goodnews){
+    setup{ require "google-search" }
+
+    call do |*args|
+      images = Google::Search::Image.new(:query => 'good+news+everyone+futurama', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = images.sample)
+      speak(msg = args.join(" "))
+    end
+  }
+
+##
+#
+  command(:ship_it){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'github+ship+it+squirrel', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "Ship it already!")
+      speak(msg = "#{images.sample}#.png")
     end
   }
 
@@ -465,6 +619,35 @@ FBomb {
       speak(msg = images.sample)
     end
   }
+
+##
+#
+  command(:movime){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'bovine', :image_size => :medium)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "Rhymes with Bovine")
+      speak(msg = images.sample)
+    end
+  }
+
+##
+#
+  command(:ecard){
+    setup{ require "google-search" }
+
+    call do |*args|
+
+      images = Google::Search::Image.new(:query => 'ecard+site:someecards.com', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "I was just thinking of you and...")
+      speak(msg = images.sample)
+    end
+  }
+
 ##
 #
   command(:yoda){
@@ -503,6 +686,110 @@ FBomb {
           end
         end
       end
+    end
+  }
+
+##
+#
+  command(:poop){
+    setup{ require "google-search" }
+
+    call do |*args|
+      images = Google::Search::Image.new(:query => 'poop', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = "coffee anyone?")
+      speak(msg = images.sample)
+    end
+  }
+
+  command(:itshappening){
+
+    call do |*args|
+      speak(msg = "What's happening?")
+      speak(msg = "http://i.imgur.com/vwMin.gif")
+    end
+  }
+
+  command(:party){
+    call do |*args|
+      count = args.include?("bomb") ? rand(10) : 1
+      speak(msg = "It's a partay!")
+      count.times do
+        speak(msg = "https://dojo4.campfirenow.com/room/279627/uploads/4580533/ara.gif")
+      end
+    end
+  }
+
+  command(:willis){
+    call do |*args|
+      speak(msg = "Whatchu talkin bout Willis?")
+      speak(msg = "http://media.tumblr.com/tumblr_lpzmqsohLJ1qi7mx3.gif")
+    end
+  }
+
+  command(:miles){
+    call do |*args|
+      images = Google::Search::Image.new(:query => 'miles matthias', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = images.sample)
+    end
+  }
+
+  command(:lolcat){
+    call do |*args|
+      images = Google::Search::Image.new(:query => 'lolcat', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = images.sample)
+    end
+  }
+  
+  command(:harlemshake){
+    call do |*args|
+      images = Google::Search::Image.new(:query => 'harlem shake gif', :image_size => :large)
+      images = images.map{|result| result.uri}.uniq.sort_by{ rand }
+      speak(msg = images.sample)
+    end
+  }
+
+  command(:fred){
+    call do |*args|
+      count = args.include?("bomb") ? rand(10) : 1
+      speak(msg = "It's a partay!")
+      count.times do
+        speak(msg = "http://sidestep.fredjean.net/fred.jpg")
+      end
+    end
+  }
+
+  command(:ara){
+    call do |*args|
+      count = args.include?("bomb") ? rand(10) : 1
+      speak(msg = "Is a CTO a Rails dev?")
+      count.times do
+        speak(msg = "https://dojo4.campfirenow.com/room/279627/uploads/4619032/wonder-woman3.jpg")
+      end
+    end
+  }
+
+  command(:spike){
+    call do |*args|
+      count = args.include?("bomb") ? rand(10) : 1
+      speak(msg = "Is a CTO a Rails dev?")
+      count.times do
+        speak(msg = "https://dojo4.campfirenow.com/room/279627/uploads/4692977/look-me-spike.png")
+      end
+    end
+  }
+
+  command(:lunch){
+    help "Get lunch recommendations near the dojo4 office"
+
+    call do |*args|
+      restaurants = Google::Search::Local.new(:query => 'lunch near 2030 17th Street Boulder, CO 80302')
+      restaurants = restaurants.map{|result| result.title}.uniq.sort_by{ rand }
+      speak(msg = "Why not try...")
+      speak(msg = restaurants.sample)
+      speak(msg = " instead of crap.")
     end
   }
 }
