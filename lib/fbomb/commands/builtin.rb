@@ -579,8 +579,8 @@ FBomb {
       latest = articles.to_a
       r = rand(14)
       article = latest[r]
-      addressee = article.css('header h1').text.strip.upcase
-      confession = ":pray: " + article.css('.entry-content p').text.strip
+      addressee = ":pray: " + article.css('header h1').text.strip.upcase
+      confession = article.css('.entry-content p').text.strip
       getimgsrc = article.css('.entry-content img').collect{|i| i.get_attribute('src')}
       image = getimgsrc.first
       speak(image) if image
