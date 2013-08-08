@@ -492,7 +492,7 @@ FBomb {
     call do |*args|
       images = Google::Search::Image.new(:query => 'cooking+with+gas+explosion', :image_size => :large)
       images = images.map { |result| result.uri}.uniq.sort_by { rand }
-      speak(msg = "Now we are cooking with gas!")
+      speak(msg = ":boom: Now we are cooking with gas! :boom:")
       speak(msg = images.sample)
     end
   }
@@ -742,7 +742,7 @@ FBomb {
       speak(msg = images.sample)
     end
   }
-  
+
   command(:harlemshake){
     call do |*args|
       images = Google::Search::Image.new(:query => 'harlem shake gif', :image_size => :large)
