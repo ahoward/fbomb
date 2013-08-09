@@ -492,6 +492,8 @@ FBomb {
     call do |*args|
       images = Google::Search::Image.new(:query => 'cooking+with+gas+explosion', :image_size => :large)
       images = images.map { |result| result.uri}.uniq.sort_by { rand }
+      images << "https://dojo4.campfirenow.com/room/279627/uploads/4783243/IMG_1982.JPG"
+      images << "https://dojo4.campfirenow.com/room/279627/uploads/4783213/IMG_1979.JPG"
       speak(msg = ":boom: Now we are cooking with gas! :boom:")
       speak(msg = images.sample)
     end
