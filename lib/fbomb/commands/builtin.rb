@@ -2,6 +2,69 @@ FBomb {
 
 ##
 #
+  command(:foaas){
+    help "Fuck Off As A Service - http://foaas.com/"
+
+    index = <<-__
+      /off/:name/:from
+      /you/:name/:from
+      /this/:from
+      /that/:from
+      /everything/:from
+      /everyone/:from
+      /donut/:name/:from
+      /shakespeare/:name/:from
+      /linus/:name/:from
+      /king/:name/:from
+      /pink/:from
+      /life/:from
+      /chainsaw/:name/:from
+      /:thing/:from
+      /thanks/:from
+      /flying/:from
+      /fascinating/:from
+    __
+
+    call do |*args|
+      op = args.shift.to_s.downcase.strip
+
+      case op
+        when '', 'help'
+          paste(index)
+        else
+          url = ['http://foaas.com', op, *args].join('/')
+          fuck_off = `curl --silent -H 'Accept: text/plain' #{ url }'`
+          speak(fuck_off)
+      end
+    end
+  }
+
+
+=begin
+
+  /off/:name/:from
+  /you/:name/:from
+  /this/:from
+  /that/:from
+  /everything/:from
+  /everyone/:from
+  /donut/:name/:from
+  /shakespeare/:name/:from
+  /linus/:name/:from
+  /king/:name/:from
+  /pink/:from
+  /life/:from
+  /chainsaw/:name/:from
+  /:thing/:from
+  /thanks/:from
+  /flying/:from
+  /fascinating/:from
+
+=end
+
+
+##
+#
   command(:planet) {
     help "With me you will take off.  http://imgur.com/a/Ilw2G."
 
