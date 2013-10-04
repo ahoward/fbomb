@@ -16,6 +16,7 @@ module FBomb
       fattr(:table){ Table.new }
       fattr(:dir){ File.join(File.expand_path(File.dirname(__FILE__)), 'commands') }
       fattr(:room)
+      fattr(:user)
       fattr(:command_paths){ [] }
 
       def load(*args)

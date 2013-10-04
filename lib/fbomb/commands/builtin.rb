@@ -33,7 +33,7 @@ FBomb {
           paste(index)
         else
           url = ['http://foaas.com', op, *args].join('/')
-          fuck_off = `curl --silent -H 'Accept: text/plain' #{ url }'`
+          fuck_off = `curl --silent -H 'Accept: text/plain' #{ url.inspect }`
           speak(fuck_off)
       end
     end

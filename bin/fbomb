@@ -128,6 +128,10 @@ Main {
               FBomb.messages.shift
             end
 
+# {"user_id"=>618416, "room_id"=>279627, "type"=>"TextMessage",
+# "starred"=>false, "created_at"=>"2013/10/04 06:05:51 +0000",
+# "id"=>1072195907, "body"=>"/hand job"}
+#
             case message['type'].to_s
               when 'TextMessage'
                 body = message['body'].to_s
@@ -138,9 +142,15 @@ Main {
                   path = arg.strip
                   command = FBomb::Command.table[path]
                   if command
-                    logging_errors do
-                      logger.info("#{ path } #{ args.join(' ') }")
-                      command.call(*args)
+                    user = @room.user(message['user_id'])
+                    FBomb::Command.user = user
+                    begin
+                      logging_errors do
+                        logger.info("#{ path } #{ args.join(' ') }")
+                        command.call(*args)
+                      end
+                    ensure
+                      FBomb::Command.user = nil
                     end
                   end
                 end
