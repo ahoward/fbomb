@@ -22,7 +22,7 @@ module FBomb
         args.flatten.uniq.each do |arg|
           Command.command_paths << arg
           case arg.to_s
-            when %r|^/|
+            when %r|^[/~]|
               load_absolute_path(arg)
             when %r|://|
               load_uri(arg)
