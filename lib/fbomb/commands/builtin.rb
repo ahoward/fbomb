@@ -123,7 +123,10 @@ FBomb {
 
       description = `curl --silent 'http://itsthisforthat.com/api.php?text'`
       re = %r|So, Basically, It's Like A (.*)\.|
-      description.sub!(/^So, Basically, It's Like A /, '').chomp!(".")
+      description.tap do |string|
+        string.sub!(/^So, Basically, It's Like A /, '').
+        string.chomp!(".")
+      end
 
       article = description[0] =~ /^[aeiou]/i ? 'an' : 'a'
 
