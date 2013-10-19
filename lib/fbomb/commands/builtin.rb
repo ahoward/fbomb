@@ -2,6 +2,20 @@ FBomb {
 
 ##
 #
+  command(:cheat){
+    help 'some useful cheat sheats'
+
+    index = <<-__
+      http://www.emoji-cheat-sheet.com/
+    __
+
+    call do |*args|
+      paste(index)
+    end
+  }
+
+##
+#
   command(:foaas){
     help "Fuck Off As A Service - http://foaas.com/"
 
