@@ -1,4 +1,23 @@
 FBomb {
+##
+#
+  command(:speak){
+    help 'say *args'
+
+    call do |*args|
+      speak(args.map{|arg| arg.to_s}.join(' '))
+    end
+  }
+
+##
+#
+  command(:paste){
+    help 'paste *args'
+
+    call do |*args|
+      paste(args.map{|arg| arg.to_s}.join(' '))
+    end
+  }
 
 ##
 #

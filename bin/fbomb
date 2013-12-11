@@ -38,12 +38,30 @@ Main {
   end
 
   def run_command!
-    path, args = argv
+    path, *args = argv
     commands = FBomb::Command.table
     command = commands[path] or abort("no such command #{ path }")
     #FBomb::Command.room = nil unless params['force'].given?
+    stdin = read_standard_input()
+    (args << stdin.chomp) if stdin
     command.call(*args)
     exit
+  end
+
+  def read_standard_input
+    require 'io/wait'
+    input = nil 
+    return input unless STDIN.ready?
+    loop do
+      begin
+        buf = STDIN.readpartial(8192)
+        input ||= ''
+        input << buf
+      rescue EOFError
+        break
+      end
+    end
+    input
   end
 
 ##
