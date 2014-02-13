@@ -6,7 +6,7 @@ Gem::Specification::new do |spec|
   spec.version = "2.0.0"
   spec.platform = Gem::Platform::RUBY
   spec.summary = "fbomb"
-  spec.description = "description: fbomb kicks the ass"
+  spec.description = "fbomb is the dangerous campfire bot"
   spec.license = "Ruby"
 
   spec.files =
