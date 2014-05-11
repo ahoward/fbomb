@@ -5,9 +5,11 @@ module FBomb
     class Table < ::Map
       def help
         map = Map.new
-        each do |path, command|
-          map[path] = command.description
+
+        each do |key, command|
+          map[key] = command.description
         end
+
         map
       end
     end
@@ -15,7 +17,7 @@ module FBomb
     class << Command
       fattr(:table){ Table.new }
       fattr(:dir){ File.join(File.expand_path(File.dirname(__FILE__)), 'commands') }
-      fattr(:room)
+      fattr(:flow)
       fattr(:user)
       fattr(:command_paths){ [] }
 
@@ -78,8 +80,8 @@ module FBomb
 
 ## instance methods
 #
-    fattr(:room){ self.class.room }
-    fattr(:path)
+    fattr(:flow){ self.class.flow }
+    fattr(:key)
     fattr(:help)
     fattr(:setup)
 
@@ -111,19 +113,10 @@ module FBomb
       @call = call
     end
 
-    %w( speak paste ).each do |method|
+    %w( speak paste upload users ).each do |method|
       module_eval <<-__, __FILE__, __LINE__
         def #{ method }(*args, &block)
-          room ? room.#{ method }(*args, &block) : puts(*args, &block)
-        end
-      __
-    end
-
-    %w( upload ).each do |method|
-      module_eval <<-__, __FILE__, __LINE__
-        def #{ method }(file, content_type = nil, filename = nil)
-          room ? room.#{ method }(file, content_type, filename) : p(file, content_type, filename)
-          file
+          flow ? flow.#{ method }(*args, &block) : puts(*args, &block)
         end
       __
     end
@@ -166,8 +159,8 @@ module FBomb
       def command(*args, &block)
         return @command if(args.empty? and block.nil?)
         @command = Command.new
-        @command.path = Util.absolute_path_for(args.shift)
-        @commands[@command.path] ||= @command
+        @command.key = Util.absolute_key_for(args.shift)
+        @commands[@command.key] ||= @command
         evaluate(&block)
       end
       alias_method('Command', 'command')

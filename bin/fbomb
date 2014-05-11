@@ -4,10 +4,10 @@ Main {
 ##
 #
   edit_config_file! <<-__
-    campfire:
-      domain: YOUR_CAMPFIRE_DOMAIN
-      token: YOUR_CAMPFIRE_API_TOKEN
-      room: YOUR_CAMPFIRE_ROOM_NAME
+    flowdock:
+      organizaion: YOUR_ORGANIZATION
+      flow: YOUR_FLOW
+      token: YOUR_PERSONAL_AS_OPPOSED_TO_FLOW_BASED_TOKEN
 
     commands:
       - system
@@ -21,27 +21,32 @@ Main {
 #
   def run
     load_commands!
-    load_room!
-    run_command! if argv.first =~ %r|^/| unless argv.empty?
+    load_flow!
+    run_command! if argv.first =~ %r|^#{ Regexp.escape(FBomb.leader) }| unless argv.empty?
   end
 
   def load_commands!
     FBomb::Command.load(config[:commands])
   end
 
-  def load_room!
-    @domain, @token, room = config[:campfire].slice(:domain, :token, :room).values
-    @campfire = FBomb::Campfire.new(@domain, :token => @token)
-    @campfire.token = @token
-    @room = @campfire.room_for(room)
-    FBomb::Command.room = @room
+  def load_flow!
+    organizaion, flow, token =
+      Map.for(config[:flowdock]).slice(:organizaion, :flow, :token).values
+
+    options = config.get(:flowdock, :options)
+
+    @flowdock = FBomb::Flowdock.new(organizaion, flow, token, options)
+
+    @flow = @flowdock.flow
+
+    FBomb::Command.flow = @flow
   end
 
   def run_command!
     path, *args = argv
     commands = FBomb::Command.table
     command = commands[path] or abort("no such command #{ path }")
-    #FBomb::Command.room = nil unless params['force'].given?
+    #FBomb::Command.flow = nil unless params['force'].given?
     stdin = read_standard_input()
     (args << stdin.chomp) if stdin
     command.call(*args)
@@ -69,12 +74,43 @@ Main {
   mode(:shell) do
     def run
       load_commands!
-      load_room!
-      require 'pry'
-      Pry.hooks[:before_session] = proc{}
-      prompt = "#{ config.campfire.domain }[#{ config.campfire.room }] >> "
-      Pry.config.prompt = proc{|*a| prompt }
-      binding.pry
+      load_flow!
+
+      require 'irb'
+
+      $FUCKING_HACK = IRB.method(:load_modules)
+      $FLOWDOCK = @flowdock
+
+      def IRB.load_modules
+        $FUCKING_HACK.call()
+
+        prompt = "#{ $FLOWDOCK.organization }/#{ $FLOWDOCK.flow }" 
+
+        IRB.conf[:PROMPT][:RO] = {
+          :PROMPT_I=>"#{ prompt }:%03n:%i> ",
+          :PROMPT_N=>"#{ prompt }:%03n:%i> ",
+          :PROMPT_S=>"#{ prompt }:%03n:%i%l ",
+          :PROMPT_C=>"#{ prompt }:%03n:%i* ",
+          :RETURN=>"=> %s\n"
+        }
+
+        IRB.conf[:PROMPT_MODE] = :RO
+        IRB.conf[:AUTO_INDENT] = true
+      end
+
+      Kernel.module_eval do
+        def flowdock
+          $FLOWDOCK
+        end
+
+        def flow
+          flowdock.flow
+        end
+      end
+
+      ARGV.clear
+
+      ::IRB.start
     end
 
     def method_missing(method, *args, &block)
@@ -121,57 +157,49 @@ Main {
       end
 
       load_commands!
-      load_room!
+      load_flow!
       drop_fbombs!
     end
 
     def drop_fbombs!
-      FBomb::Command.room = @room
-      @room.join
-      at_exit{ @room.leave }
-      @room.speak("fbomb in da house...")
+      FBomb::Command.flow = @flow
 
-      url = URI.parse("http://#{ @token }:x@streaming.campfirenow.com//room/#{ @room.id }/live.json")
+      at_exit{ @flow.leave }
+
+      @flow.speak("fbomb (beta) in da house...")
 
       trap('INT'){ exit }
 
+=begin
+{"event"=>"activity.user", "tags"=>[], "uuid"=>nil, "persist"=>false, "id"=>194342, "flow"=>"c6dbc029-2173-4fb6-a423-32293c373106", "content"=>{"last_activity"=>1399656686378}, "sent"=>1399657205286, "app"=>nil, "attachments"=>[], "user"=>"76002"}
+=end
       loop do
         logging_errors do
-          Yajl::HttpStream.get(url) do |message|
-            FBomb.message = message
+          @flow.stream do |flow|
+#p :flow => flow
+            next unless flow[:event] == 'message'
 
-            FBomb.messages.push(message)
+            content = flow[:content].to_s
+            tokens = content.scan(%r/[^\s]+/)
+            arg, *args = tokens
 
-            while FBomb.messages.size > 1024
-              FBomb.messages.shift
-            end
+            if arg =~ %r|^\s*#{ Regexp.escape(FBomb.leader) }|
+              key = arg.strip
+              command = FBomb::Command.table[key]
 
-# {"user_id"=>618416, "room_id"=>279627, "type"=>"TextMessage",
-# "starred"=>false, "created_at"=>"2013/10/04 06:05:51 +0000",
-# "id"=>1072195907, "body"=>"/hand job"}
-#
-            case message['type'].to_s
-              when 'TextMessage'
-                body = message['body'].to_s
-                tokens = body.scan(%r/[^\s]+/)
-                arg, *args = tokens
-
-                if arg =~ %r|^\s*/|
-                  path = arg.strip
-                  command = FBomb::Command.table[path]
-                  if command
-                    user = @room.user(message['user_id'])
-                    FBomb::Command.user = user
-                    begin
-                      logging_errors do
-                        logger.info("#{ path } #{ args.join(' ') }")
-                        command.call(*args)
-                      end
-                    ensure
-                      FBomb::Command.user = nil
-                    end
+              if command
+                user = @flow.user_for(flow[:user])
+#p :user => user
+                FBomb::Command.user = user
+                begin
+                  logging_errors do
+                    logger.info("#{ key } #{ args.join(' ') }")
+                    command.call(*args)
                   end
+                ensure
+                  FBomb::Command.user = nil
                 end
+              end
             end
          end
 

@@ -77,6 +77,22 @@ module Util
     absolute_path_for(arg, *args)
   end
 
+  %w(
+    paths_for
+    absolute_path_for
+    absolute_prefix_for
+    path_for
+    normalize_path
+  ).each do |src, dst|
+    dst = src.gsub('path', 'key')
+
+    module_eval <<-__
+      def #{ dst }(*args, &block)
+        #{ src }(*args, &block).gsub('/', '.')
+      end
+    __
+  end
+
   def indent(chunk, n = 2)
     lines = chunk.split %r/\n/
     re = nil

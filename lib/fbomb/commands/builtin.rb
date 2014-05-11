@@ -1,6 +1,16 @@
 FBomb {
 ##
 #
+  command(:hai){
+    help 'say hai'
+
+    call do |*args|
+      speak('hai')
+    end
+  }
+
+##
+#
   command(:speak){
     help 'say *args'
 
@@ -35,6 +45,7 @@ FBomb {
 
 ##
 #
+  # FIXME
   command(:foaas){
     help "Fuck Off As A Service - http://foaas.com/"
 
@@ -142,13 +153,14 @@ FBomb {
 
 ##
 #
+  # FIXME
   command(:elevator){
     help "Give me the pitch."
 
     call do |*args|
       message = [
         "We're %s %s.",
-        "I said \"%s %s\" and the room got really quiet.",
+        "I said \"%s %s\" and the flow got really quiet.",
         "We are going after a billion-dollar market with %s %s.",
         "If you can't sell %s %s, you can't sell anything.",
         "I've got it! \"Sometimes you feel like a nut, sometimes you're %s %s.\""
@@ -310,6 +322,7 @@ FBomb {
 
 ##
 #
+  # FIXME
   command(:xkcd) {
     call do |*args|
       id = args.shift || rand(1000)
@@ -334,6 +347,7 @@ FBomb {
 
 ##
 #
+  # FIXME
   command(:goodfuckingdesignadvice) {
     call do |*args|
       url = "http://goodfuckingdesignadvice.com/index.php"
@@ -393,30 +407,16 @@ FBomb {
 
 ##
 #
-  command(:people){
-    call do |*args|
-      msgs = []
-      room.users.each do |user|
-        name = user['name']
-        email_address = user['email_address']
-        avatar_url = user['avatar_url']
-        speak(avatar_url)
-        speak("#{ name } // #{ email_address }")
-      end
-    end
-  }
-
-##
-#
   command(:peeps){
     call do |*args|
       msgs = []
-      room.users.each do |user|
+      flow.users.each do |user|
         name = user['name']
-        email_address = user['email_address']
-        msgs.push("#{ name }")
+        email = user['email']
+        avatar = user['avatar']
+        speak(avatar.gsub(%r|/+$|, '') + '.jpg')
+        speak("#{ name } // #{ email }")
       end
-      speak(msgs.join(', '))
     end
   }
 
@@ -459,58 +459,6 @@ FBomb {
 
 ##
 #
-  command(:pixtress){
-    call do |*args|
-      url = "http://pixtress.tumblr.com/random"
-      error = nil
-      retries = 0
-
-      4.times do
-        begin
-          agent = Mechanize.new
-          agent.open_timeout = 240
-          agent.read_timeout = 240
-
-          page = agent.get(url)
-
-          page.search('//div[@class="ThePhoto"]/a').each do |node|
-            node.search('//img').each do |img|
-              src = img['src']
-              alt = img['alt']
-              url = src
-
-              agent.request_headers = { 'Referer' => 'http://pixtress.tumbler.com/' }
-              image = agent.get(src)
-
-              Util.tmpdir do
-                filename = image.filename.split(/_AWS/).first
-                open(filename, 'w'){|fd| fd.write(image.body)}
-
-                url = File.join(room.url, "uploads.xml")
-                cmd = "curl -Fupload=@#{ filename.inspect } #{ url.inspect }"
-                system(cmd)
-                speak(alt)
-              end
-
-              break
-            end
-          end
-
-          break
-        rescue Object => error
-          if retries < 8
-            retries += 1
-            retry
-          end
-        end
-      end
-
-      raise error if error
-    end
-  }
-
-##
-#
   command(:shaka){
     call do |*args|
       speak('http://s3.amazonaws.com/drawohara.com.images/shaka.jpg')
@@ -526,8 +474,6 @@ FBomb {
       'http://dbprng00ikc2j.cloudfront.net/work/image/390379/d14s2l/20101223063430-exterface_unicorn_03.jpg',
       'http://fc04.deviantart.net/fs51/f/2009/281/a/7/White_Unicorn_My_Little_Pony_by_Barkingmadd.jpg',
       'http://th54.photobucket.com/albums/g119/jasonjmore/th_UnicornPeeingRainbow.jpg',
-      'https://dojo4.campfirenow.com/room/279627/uploads/4343363/unicornattack11.png',
-      'https://dojo4.campfirenow.com/room/279627/uploads/4343762/spirit-animal.jpg',
       'http://th242.photobucket.com/albums/ff99/1010496/th_unicornpr0n.gif'
     ]
 
@@ -591,8 +537,6 @@ FBomb {
     call do |*args|
       images = Google::Search::Image.new(:query => 'cooking+with+gas+explosion', :image_size => :large)
       images = images.map { |result| result.uri}.uniq.sort_by { rand }
-      images << "https://dojo4.campfirenow.com/room/279627/uploads/4783243/IMG_1982.JPG"
-      images << "https://dojo4.campfirenow.com/room/279627/uploads/4783213/IMG_1979.JPG"
       speak(msg = ":boom: Now we are cooking with gas! :boom:")
       speak(msg = images.sample)
     end
@@ -811,16 +755,6 @@ FBomb {
     end
   }
 
-  command(:party){
-    call do |*args|
-      count = args.include?("bomb") ? rand(10) : 1
-      speak(msg = "It's a partay!")
-      count.times do
-        speak(msg = "https://dojo4.campfirenow.com/room/279627/uploads/4580533/ara.gif")
-      end
-    end
-  }
-
   command(:willis){
     call do |*args|
       speak(msg = "Whatchu talkin bout Willis?")
@@ -849,36 +783,6 @@ FBomb {
       images = Google::Search::Image.new(:query => 'harlem shake gif', :image_size => :large)
       images = images.map{|result| result.uri}.uniq.sort_by{ rand }
       speak(msg = images.sample)
-    end
-  }
-
-  command(:fred){
-    call do |*args|
-      count = args.include?("bomb") ? rand(10) : 1
-      speak(msg = "It's a partay!")
-      count.times do
-        speak(msg = "http://sidestep.fredjean.net/fred.jpg")
-      end
-    end
-  }
-
-  command(:ara){
-    call do |*args|
-      count = args.include?("bomb") ? rand(10) : 1
-      speak(msg = "Is a CTO a Rails dev?")
-      count.times do
-        speak(msg = "https://dojo4.campfirenow.com/room/279627/uploads/4619032/wonder-woman3.jpg")
-      end
-    end
-  }
-
-  command(:spike){
-    call do |*args|
-      count = args.include?("bomb") ? rand(10) : 1
-      speak(msg = "Is a CTO a Rails dev?")
-      count.times do
-        speak(msg = "https://dojo4.campfirenow.com/room/279627/uploads/4692977/look-me-spike.png")
-      end
     end
   }
 

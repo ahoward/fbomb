@@ -1,0 +1,54 @@
+todo:
+
+  - Fbomb.debug == true
+    - command print to stdout
+    - stream reads from stdin
+
+  - debug mode vommits yaml to stdout output?
+  - debug streaming read from stdin input? 
+
+  - mode(:debug){ }
+
+  - docs
+
+
+done:
+  - user support
+
+  - grabbing users works
+    - https://user:pass@api.flowdock.com/flows/:org/:flow/messages/:message_id
+    - /flows/:organisation/:flow/users
+    - https://829ac2ae34fd4c8998cf6220d43dd3de:@api.flowdock.com/flows/dojo4/dojo4
+
+    users = Map.for(JSON.parse(`curl -s
+    https://829ac2ae34fd4c8998cf6220d43dd3de:@api.flowdock.com/flows/dojo4/dojo4`))
+
+    users = JSON.parse(`curl -s
+    https://829ac2ae34fd4c8998cf6220d43dd3de:@api.flowdock.com/flows/dojo4/dojo4`).map{|u|
+    Map.for(u)}
+
+    users = JSON.parse(`curl -s
+    https://829ac2ae34fd4c8998cf6220d43dd3de:@api.flowdock.com/flows/dojo4/dojo4/users`).map{|u|
+    Map.for(u)}
+
+irb(main):028:0> users.last
+=> {"id"=>76002,
+ "nick"=>"Miles",
+ "email"=>"miles@dojo4.com",
+ "avatar"=>
+  "https://d2cxspbh1aoie1.cloudfront.net/avatars/8c162037eef71fa7dd53099c794c064e/",
+ "name"=>"Miles Matthias",
+ "website"=>nil,
+ "disabled"=>false,
+ "last_activity"=>1399766456573,
+ "last_ping"=>1399766456573,
+ "in_flow"=>true,
+ "status"=>"into office around 10."}
+
+    , {"users"=>
+      [{"id"=>79899, 
+          "nick"=>"Emily",
+              "email"=>"emily@dojo4.com",
+                  "avatar"=>   
+                       "https://d2cxspbh1aoie1.cloudfront.net/avatars/aacc0074e76acdcc224ac3d733dd8b42/",
+                           "name"=>"Emily Utz",

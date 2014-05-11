@@ -2,10 +2,10 @@ module FBomb
   class Campfire < ::Tinder::Campfire
     module SearchExtension
       def search(term)
-        room = self
+        flow = self
         term = CGI.escape(term.to_s)
-        return_to_room_id = CGI.escape(room.id.to_s)
-        messages = connection.get("/search?term=#{ term }&return_to_room_id=#{ return_to_room_id }")
+        return_to_flow_id = CGI.escape(flow.id.to_s)
+        messages = connection.get("/search?term=#{ term }&return_to_flow_id=#{ return_to_flow_id }")
         if messages and messages.is_a?(Hash)
           messages = messages['messages']
         end
@@ -39,9 +39,9 @@ module FBomb
     module StreamExtension
       def stream
         @stream ||= (
-          room = self
+          flow = self
           Twitter::JSONStream.connect(
-            :path => "/room/#{ room.id }/live.json",
+            :path => "/flow/#{ flow.id }/live.json",
             :host => 'streaming.campfirenow.com',
             :auth => "#{ connection.token }:x"
           )
@@ -57,7 +57,7 @@ module FBomb
       attr_accessor :campfire
 
       def url
-        File.join(campfire.url, "room/#{ id }")
+        File.join(campfire.url, "flow/#{ id }")
       end
     end
 
@@ -67,15 +67,15 @@ module FBomb
       end
     end
 
-    def room_for(name)
+    def flow_for(name)
       name = name.to_s
-      room = rooms.detect{|_| _.name == name}
-      room.extend(SearchExtension)
-      room.extend(UserExtension)
-      room.extend(StreamExtension)
-      room.extend(UrlExtension)
-      room.campfire = self
-      room
+      flow = flows.detect{|_| _.name == name}
+      flow.extend(SearchExtension)
+      flow.extend(UserExtension)
+      flow.extend(StreamExtension)
+      flow.extend(UrlExtension)
+      flow.campfire = self
+      flow
     end
 
     attr_accessor :token

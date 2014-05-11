@@ -7,6 +7,7 @@
   require 'open-uri'
   require 'fileutils'
   require 'tmpdir'
+  require 'yaml'
 
 # libs
 #
@@ -19,17 +20,20 @@
 
     def dependencies
       {
-        'tinder'              =>  [ 'tinder'         , '>= 1.7.0'   ]  , 
-        'yajl'                =>  [ 'yajl-ruby'      , '>= 0.8.2'   ]  , 
-        'fukung'              =>  [ 'fukung'         , '>= 1.1.0'   ]  , 
-        'main'                =>  [ 'main'           , '>= 4.7.6'   ]  ,
-        'nokogiri'            =>  [ 'nokogiri'       , '>= 1.5.0'   ]  ,
-        'google-search'       =>  [ 'google-search'  , '>= 1.0.2'   ]  ,
-        'unidecode'           =>  [ 'unidecode'      , '>= 1.0.0'   ]  ,
-        'systemu'             =>  [ 'systemu'        , '>= 2.3.0'   ]  ,
-        'pry'                 =>  [ 'pry'            , '>= 0.9.6.2' ]  ,
-        'mechanize'           =>  [ 'mechanize'      , '>= 2.0.1'   ]  ,
-        'mime/types'          =>  [ 'mime-types'     , '>= 1.16'    ]
+        'flowdock'        =>  [ 'flowdock'        , '>= 0.4.0'   ]  , 
+        'eventmachine'    =>  [ 'eventmachine'    , '>= 1.0.3'   ]  , 
+        'em-http'         =>  [ 'em-http-request' , '>= 1.1.2'   ]  , 
+        'json'            =>  [ 'json'            , '>= 1.8.1'   ]  , 
+        'coerce'          =>  [ 'coerce'          , '>= 0.0.6'   ]  , 
+        'fukung'          =>  [ 'fukung'          , '>= 1.1.0'   ]  , 
+        'main'            =>  [ 'main'            , '>= 4.7.6'   ]  , 
+        'nokogiri'        =>  [ 'nokogiri'        , '>= 1.5.0'   ]  , 
+        'google-search'   =>  [ 'google-search'   , '>= 1.0.2'   ]  , 
+        'unidecode'       =>  [ 'unidecode'       , '>= 1.0.0'   ]  , 
+        'systemu'         =>  [ 'systemu'         , '>= 2.3.0'   ]  , 
+        'pry'             =>  [ 'pry'             , '>= 0.9.6.2' ]  , 
+        'mechanize'       =>  [ 'mechanize'       , '>= 2.7.3'   ]  , 
+        'mime/types'      =>  [ 'mime-types'      , '>= 1.16'    ] 
       }
     end
 
@@ -56,7 +60,16 @@
       @messages ||= Array.new
     end
 
+    def leader
+      '.'
+    end
+
+    def uuid
+      UUID.create.to_s
+    end
+
     attr_accessor :message
+    attr_accessor :debug
 
     extend(FBomb)
   end
@@ -64,7 +77,6 @@
 ## isolate gems
 #
   require 'rubygems'
-  # require 'isolate'
 
   libdir = File.expand_path(File.join('~', '.fbomb', 'isolate'))
   options = {:file => false, :path => libdir}
@@ -78,42 +90,39 @@
       #STDERR.puts(command)
     end
   end
-  #abort unless deps
 
-  # Isolate::Sandbox.new(options) do
-    ::FBomb.dependencies.each do |lib, dependency|
-      #puts "="*45
-      #puts lib
-      #puts dependency
-      #puts "="*45
-      begin
-        gem(*dependency)
-      rescue Gem::LoadError
-        raise
-        lib, version = dependency 
-        command = "gem install #{ lib.inspect } --version #{ version.inspect }"
-        system(command)
-        retry
-      end
+  ::FBomb.dependencies.each do |lib, dependency|
+    begin
+      gem(*dependency)
+    rescue Gem::LoadError
+      raise
+      lib, version = dependency 
+      command = "gem install #{ lib.inspect } --version #{ version.inspect }"
+      system(command)
+      retry
     end
-  # end.activate
-  # Isolate.refresh
+  end
 
 ## load gems
 #
   ::FBomb.dependencies.each do |lib, dependency|
     require(lib)
   end
-  require "yajl/json_gem"     ### this *replaces* any other JSON.parse !
-  require "yajl/http_stream"  ### we really do need this
 
 ## load fbomb
 #
   FBomb.load %w[
     util.rb
-    campfire.rb
+    flowdock.rb
     command.rb
+    uuid.rb
   ]
+
+##
+#
+  if Coerce.boolean(ENV['FBOMB_DEBUG'])
+    FBomb.debug = true
+  end
 
 ## openssl - STFU!
 #
