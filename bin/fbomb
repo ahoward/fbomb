@@ -140,6 +140,22 @@ Main {
     end
   end
 
+  mode(:speak) do
+    option('--tag=tag', '-t')
+
+    def run
+      speak!
+    end
+  end
+
+  mode(:paste) do
+    option('--tag=tag', '-t')
+
+    def run
+      paste!
+    end
+  end
+
   mode(:run) do
     option('--daemon', '-d')
 
@@ -162,8 +178,6 @@ Main {
     end
 
     def drop_fbombs!
-      FBomb::Command.flow = @flow
-
       at_exit{ @flow.leave }
 
       @flow.speak("fbomb (beta) in da house...")
@@ -227,6 +241,34 @@ Main {
       m, c, b = e.message, e.class, Array(e.backtrace).join("\n")
       logger.error("#{ m }(#{ c })\n#{ b }")
     end
+  end
+
+  def speak_or_paste!(which)
+    load_commands!
+    load_flow!
+
+    tags = 
+      if params['tag'] and params['tag'].given?
+        Coerce.list_of_strings(params['tag'].value)
+      else
+        []
+      end
+
+    content = ARGV.join(' ')
+
+    if content.strip == '-'
+      content = STDIN.read
+    end
+
+    @flow.send(which, content, :tags => tags)
+  end
+
+  def speak!
+    speak_or_paste!(:speak)
+  end
+
+  def paste!
+    speak_or_paste!(:paste)
   end
 }
 
