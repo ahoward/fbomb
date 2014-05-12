@@ -9,6 +9,20 @@ Main {
       flow: YOUR_FLOW
       token: YOUR_PERSONAL_AS_OPPOSED_TO_FLOW_BASED_TOKEN
 
+    flowdock:
+      organizaion: YOUR_ORGANIZATION
+      flow: YOUR_FLOW
+      token: TOP_LEVEL_TOKEN_FOUND_HERE # http://cl.ly/VU6j/Screen%20Shot%202014-05-12%20at%2012.36.39%20PM.png 
+
+      options:
+        client:
+          api_token: FLOW_LEVEL_API_TOKEN_FOUND_HERE # http://cl.ly/VTKt/Screen%20Shot%202014-05-12%20at%2012.37.35%20PM.png 
+          source: arbitrary-application-name-without-spaces
+          external_user_name: arbitrary-roboto-name-without-spaces 
+          from:
+            name: Robot First Last Name
+            email: robot's email (must have access!)
+
     commands:
       - system
       - builtin
