@@ -100,8 +100,7 @@ TIPS
 
 ```bash
 
-# run in debug mode to emulate getting command from the flow and sending the
-back (stdin/stdout) based controls
+# run in debug mode to emulate via stdin/stdout based controls
 
 ~> FBOMB_DEBUG=42 fbomb run
 
