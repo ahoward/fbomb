@@ -171,6 +171,36 @@ task :gem => [:clean, :gemspec] do
   This.gem = File.join(This.pkgdir, File.basename(gem))
 end
 
+task :gemfile do
+  if This.dependencies.nil?
+    dependencies = []
+  else
+    case This.dependencies
+      when Hash
+        dependencies = This.dependencies.values
+      when Array
+        dependencies = This.dependencies
+    end
+  end
+
+  template = 
+    if test(?e, 'gemfile.erb')
+      Template{ IO.read('gemfile.erb') }
+    else
+      Template {
+        <<-__
+          source 'https://rubygems.org'
+
+          <% dependencies.each do |lib_version| %>
+            gem(*<%= Array(lib_version).flatten.inspect %>)
+          <% end %>
+        __
+      }
+    end
+
+  IO.binwrite('Gemfile', template)
+end
+
 task :readme do
   samples = ''
   prompt = '~ > '
