@@ -126,4 +126,6 @@ back (stdin/stdout) based controls
 
 DOCS
 ====
-  RFTC https://github.com/ahoward/fbomb/tree/master/lib and https://github.com/ahoward/fbomb/blob/master/bin/fbomb 
+RFTC  @
+- https://github.com/ahoward/fbomb/tree/master/lib
+- https://github.com/ahoward/fbomb/blob/master/bin/fbomb 
