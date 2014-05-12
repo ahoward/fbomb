@@ -12,7 +12,7 @@
 # libs
 #
   module FBomb
-    Version = '1.1.0' unless defined?(Version)
+    Version = '2.0.0' unless defined?(Version)
 
     def version
       FBomb::Version
@@ -160,3 +160,7 @@
   def FBomb(*args, &block)
     FBomb::Command::DSL.evaluate(*args, &block)
   end
+
+##
+#
+  Fbomb=FBomb
