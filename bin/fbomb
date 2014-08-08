@@ -174,7 +174,7 @@ Main {
     option('--daemon', '-d')
 
     def run
-      $cmd = [which_ruby, *ARGV].join(' ')
+      $cmd = [Util.which_ruby, *ARGV].join(' ')
 
       if params['daemon'].given?
         DATA.flock(File::LOCK_EX|File::LOCK_NB) or exit!(42)
