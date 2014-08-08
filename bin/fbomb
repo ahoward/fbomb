@@ -214,10 +214,11 @@ Main {
           Thread.current.abort_on_exception = true
 
           loop do
-            sleep(10)
+            sleep(60)
 
-            if($inactive and ((Time.now - $active_at).abs > 30))
-              p '$cmd' => $cmd
+            if($inactive and ((Time.now - $active_at).abs > 300))
+              #p '$cmd' => $cmd
+              Kernel.exec($cmd)
             end
           end
         end
