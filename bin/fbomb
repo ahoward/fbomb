@@ -174,6 +174,8 @@ Main {
     option('--daemon', '-d')
 
     def run
+      $cmd = [which_ruby, *ARGV].join(' ')
+
       if params['daemon'].given?
         DATA.flock(File::LOCK_EX|File::LOCK_NB) or exit!(42)
         Dir.chdir('/tmp')
@@ -192,42 +194,67 @@ Main {
     end
 
     def drop_fbombs!
+    #
       at_exit{ @flow.leave }
 
-      @flow.speak("fbomb (beta) in da house...")
+      # @flow.speak("fbomb (beta) in da house...")
 
       trap('INT'){ exit }
 
 =begin
 {"event"=>"activity.user", "tags"=>[], "uuid"=>nil, "persist"=>false, "id"=>194342, "flow"=>"c6dbc029-2173-4fb6-a423-32293c373106", "content"=>{"last_activity"=>1399656686378}, "sent"=>1399657205286, "app"=>nil, "attachments"=>[], "user"=>"76002"}
 =end
+
+    #
+      $inactive = true
+      $active_at = Time.now
+
+      @monitor =
+        Thread.new do
+          Thread.current.abort_on_exception = true
+
+          loop do
+            sleep(10)
+
+            if($inactive and ((Time.now - $active_at).abs > 30))
+              p '$cmd' => $cmd
+            end
+          end
+        end
+
+    #
       loop do
         logging_errors do
           @flow.stream do |flow|
-#p :flow => flow
-            next unless flow[:event] == 'message'
+            begin
+              $inactive = false
+              $active_at = Time.now
 
-            content = flow[:content].to_s
-            tokens = content.scan(%r/[^\s]+/)
-            arg, *args = tokens
+              next unless %w[ message comment ].include?(flow[:event])
 
-            if arg =~ %r|^\s*#{ Regexp.escape(FBomb.leader) }|
-              key = arg.strip
-              command = FBomb::Command.table[key]
+              content = flow[:content].to_s
+              tokens = content.scan(%r/[^\s]+/)
+              arg, *args = tokens
 
-              if command
-                user = @flow.user_for(flow[:user])
-#p :user => user
-                FBomb::Command.user = user
-                begin
-                  logging_errors do
-                    logger.info("#{ key } #{ args.join(' ') }")
-                    command.call(*args)
+              if arg =~ %r|^\s*#{ Regexp.escape(FBomb.leader) }|
+                key = arg.strip
+                command = FBomb::Command.table[key]
+
+                if command
+                  user = @flow.user_for(flow[:user])
+                  FBomb::Command.user = user
+                  begin
+                    logging_errors do
+                      logger.info("#{ key } #{ args.join(' ') }")
+                      command.call(*args)
+                    end
+                  ensure
+                    FBomb::Command.user = nil
                   end
-                ensure
-                  FBomb::Command.user = nil
                 end
               end
+            ensure
+              $inactive = true
             end
          end
 

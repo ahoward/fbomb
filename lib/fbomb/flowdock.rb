@@ -121,7 +121,7 @@ module FBomb
       end
 
       def leave
-        say 'bai'
+        #say 'bai'
       end
 
 =begin

@@ -1,4 +1,12 @@
 module Util
+  def which_ruby
+    c                 = RbConfig::CONFIG
+    bindir            = c["bindir"] || c['BINDIR']
+    ruby_install_name = c['ruby_install_name'] || c['RUBY_INSTALL_NAME'] || 'ruby'
+    ruby_ext          = c['EXEEXT'] || ''
+    ruby              = File.join(bindir, (ruby_install_name + ruby_ext))
+  end
+
   def hostname
     @hostname ||= (Socket.gethostname rescue 'localhost')
   end

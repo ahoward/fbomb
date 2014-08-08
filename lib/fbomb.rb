@@ -8,6 +8,7 @@
   require 'fileutils'
   require 'tmpdir'
   require 'yaml'
+  require 'rbconfig'
 
 # libs
 #
