@@ -217,7 +217,7 @@ Main {
             sleep(60)
 
             if($inactive and ((Time.now - $active_at).abs > 300))
-              #p '$cmd' => $cmd
+              p '$cmd' => $cmd
               Kernel.exec($cmd)
             end
           end
@@ -252,6 +252,10 @@ Main {
                   ensure
                     FBomb::Command.user = nil
                   end
+                end
+              else
+                if @flow.yelling?
+                  @flow.yell(content)
                 end
               end
             ensure
