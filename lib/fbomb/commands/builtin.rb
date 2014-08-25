@@ -1,6 +1,28 @@
 FBomb {
 ##
 #
+  command(:yell){
+    help 'YELL'
+
+    call do |*args|
+      flow.yelling = true
+      flow.yell(*args) unless args.empty?
+    end
+  }
+
+##
+#
+  command(:stfu){
+    help 'no YELLING'
+
+    call do |*args|
+      flow.yell('shut the fuck up!')
+      flow.yelling = false
+    end
+  }
+
+##
+#
   command(:hai){
     help 'say hai'
 

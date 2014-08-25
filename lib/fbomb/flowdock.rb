@@ -58,6 +58,14 @@ module FBomb
     end
 
     class Flow < Object
+      fattr(:yelling){ false }
+
+      def yell(*args)
+        string = args.join(' ')
+        prefix = ["FUCKING", "OH YEAH!?", "SRSLY"].sort_by{ rand }.first
+        paste([prefix, string].join('  '))
+      end
+
       def escape(string)
         string.to_s.gsub('+', '%2B')
       end
