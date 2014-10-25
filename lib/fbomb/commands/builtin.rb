@@ -161,6 +161,48 @@ FBomb {
 
 ##
 #
+  command(:michael) {
+    help "Meow."
+
+    call do |*args|
+      basenames = %w[
+        Aviation-Cat-Halloween-Costume.jpg.jpg
+        Bumblebee-Cat-Halloween-Costume.jpg.jpg
+        Burger-Cat-Halloween-Costume.jpg.jpg
+        Business-Cat-Halloween-Costume.png.png
+        Cat-Batman-Halloween-Costume.jpg.jpg
+        Cat-Dressed-as-a-Bunny-For-Halloween.jpg.jpg
+        Cat-in-the-Hat-Halloween-Costume.jpg.jpg
+        Fitness-Cat-Halloween-Costume.jpg.jpg
+        Froggy-Cat-Halloween-Costume.jpg.jpg
+        Harry-Potter-Cat-Halloween-Costume.jpg.jpg
+        Hello-Kitty-Cat-Halloween-Costume.jpg.jpg
+        Lion-Cat-Halloween-Costume.jpg.jpg
+        Little-Red-Riding-Cat-Halloween-Costume.jpg.jpg
+        Lobster-Cat-Halloween-Costume.png.png
+        Pirate-Cat-Halloween-Costume.jpg.jpg
+        Princess-Leia-Halloween-Cat-Costume.jpg.jpg
+        Pumpkin-Cat-Halloween-Costume.jpg-600x400.jpg
+        Pure-Bred-Cat-Halloween-Costume.jpg.jpg
+        Rice-Krispies-Treat-Cat.jpg.jpg
+        Scuba-Cat-Halloween-Costume.jpg.jpg
+        Spider-Cat-Halloween-Costume.jpg-600x427.jpg
+        Super-Mario-Cat-Halloween-Costume.png.png
+        Superman-Cat-Halloween-Costume.jpg-600x525.jpg
+        Sushi-Cat-Halloween-Costume2.jpg2.jpg
+        Taco-Cat-Halloween-Costume.jpg.jpg
+        Witch-Hat-Cat-Costume-For-Halloween.jpg.jpg
+        Yoda-Cat-Halloween-Costume.png.png
+      ]
+
+      basename = basenames.sort_by{ rand }.first
+      url = File.join('https://raw.github.com/ahoward/fbomb/master/images/michael', basename)
+      speak(url)
+    end
+  }
+
+##
+#
   command(:chuckle) {
     help "Ha ha, very funny."
     setup{ require "google-search" }
