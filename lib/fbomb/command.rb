@@ -139,7 +139,7 @@ module FBomb
     end
 
     def matches?(*args)
-      text = Coerce.list_of_strings(args)
+      text = Coerce.list_of_strings(args).join(' ')
       patterns.any?{|pattern| pattern === text}
     end
 
