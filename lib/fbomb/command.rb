@@ -182,6 +182,12 @@ module FBomb
         evaluate(&block)
       end
 
+      def matches(*args)
+        args.each do |arg|
+          @command.patterns.push(arg)
+        end
+      end
+
       def help(*args)
         @command.help = args.join("\n")
       end
