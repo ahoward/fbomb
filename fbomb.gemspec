@@ -3,7 +3,7 @@
 
 Gem::Specification::new do |spec|
   spec.name = "fbomb"
-  spec.version = "2.0.0"
+  spec.version = "2.1.0"
   spec.platform = Gem::Platform::RUBY
   spec.summary = "fbomb"
   spec.description = "description: fbomb kicks the ass"
@@ -14,10 +14,39 @@ Gem::Specification::new do |spec|
  "Gemfile.lock",
  "README.md",
  "Rakefile",
+ "a.patch",
  "bin",
  "bin/fbomb",
  "fbomb.gemspec",
  "images",
+ "images/michael",
+ "images/michael/Aviation-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Bumblebee-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Burger-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Business-Cat-Halloween-Costume.png.png",
+ "images/michael/Cat-Batman-Halloween-Costume.jpg.jpg",
+ "images/michael/Cat-Dressed-as-a-Bunny-For-Halloween.jpg.jpg",
+ "images/michael/Cat-in-the-Hat-Halloween-Costume.jpg.jpg",
+ "images/michael/Fitness-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Froggy-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Harry-Potter-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Hello-Kitty-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Lion-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Little-Red-Riding-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Lobster-Cat-Halloween-Costume.png.png",
+ "images/michael/Pirate-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Princess-Leia-Halloween-Cat-Costume.jpg.jpg",
+ "images/michael/Pumpkin-Cat-Halloween-Costume.jpg-600x400.jpg",
+ "images/michael/Pure-Bred-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Rice-Krispies-Treat-Cat.jpg.jpg",
+ "images/michael/Scuba-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Spider-Cat-Halloween-Costume.jpg-600x427.jpg",
+ "images/michael/Super-Mario-Cat-Halloween-Costume.png.png",
+ "images/michael/Superman-Cat-Halloween-Costume.jpg-600x525.jpg",
+ "images/michael/Sushi-Cat-Halloween-Costume2.jpg2.jpg",
+ "images/michael/Taco-Cat-Halloween-Costume.jpg.jpg",
+ "images/michael/Witch-Hat-Cat-Costume-For-Halloween.jpg.jpg",
+ "images/michael/Yoda-Cat-Halloween-Costume.png.png",
  "images/planet",
  "images/planet/1dEzGbz.jpg",
  "images/planet/3aASzbv.jpg",

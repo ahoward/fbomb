@@ -84,6 +84,7 @@ module FBomb
     fattr(:key)
     fattr(:help)
     fattr(:setup)
+    fattr(:patterns){ [] }
 
     def initialize
       @call = proc{}
@@ -137,6 +138,11 @@ module FBomb
       message['body'] if message
     end
 
+    def matches?(*args)
+      text = Coerce.list_of_strings(args)
+      patterns.any?{|pattern| pattern === text}
+    end
+
 ## dsl
 #
     class DSL
@@ -164,6 +170,17 @@ module FBomb
         evaluate(&block)
       end
       alias_method('Command', 'command')
+
+      def match(*args, &block)
+        return @command if(args.empty? and block.nil?)
+        @command = Command.new
+        pattern = args.shift
+        key = Util.absolute_key_for(pattern.to_s)
+        @command.key = key
+        @command.patterns.push(pattern)
+        @commands[@command.key] ||= @command
+        evaluate(&block)
+      end
 
       def help(*args)
         @command.help = args.join("\n")

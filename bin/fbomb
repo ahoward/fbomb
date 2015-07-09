@@ -231,12 +231,40 @@ Main {
               $inactive = false
               $active_at = Time.now
 
+            #
               next unless %w[ message comment ].include?(flow[:event])
 
-              content = flow[:content].to_s
+            #
+              content = flow[:content]
+
+              case content
+                when Hash
+                  content = content[:text].to_s
+                else
+                  content = content.to_s
+              end
+
+            #
               tokens = content.scan(%r/[^\s]+/)
               arg, *args = tokens
 
+            #
+              FBomb::Command.table.each do |key, command|
+                if command.matches?(content)
+                  user = @flow.user_for(flow[:user])
+                  FBomb::Command.user = user
+                  begin
+                    logging_errors do
+                      logger.info("#{ key } =~ #{ content }")
+                      command.call(content)
+                    end
+                  ensure
+                    FBomb::Command.user = nil
+                  end
+                end
+              end
+
+            #
               if arg =~ %r|^\s*#{ Regexp.escape(FBomb.leader) }|
                 key = arg.strip
                 command = FBomb::Command.table[key]
