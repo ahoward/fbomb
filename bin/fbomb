@@ -328,7 +328,7 @@ Main {
         []
       end
 
-    content = ARGV.join(' ')
+    content = argv.join(' ')
 
     if content.strip == '-'
       content = STDIN.read
