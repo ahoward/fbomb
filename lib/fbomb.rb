@@ -13,7 +13,7 @@
 # libs
 #
   module FBomb
-    Version = '3.2.0' unless defined?(Version)
+    Version = '4.0.0' unless defined?(Version)
 
     def version
       FBomb::Version
@@ -21,19 +21,19 @@
 
     def dependencies
       {
-        'flowdock'        =>  [ 'flowdock'        , '>= 0.4.0'   ]  , 
-        'eventmachine'    =>  [ 'eventmachine'    , '>= 1.0.3'   ]  , 
-        'em-http'         =>  [ 'em-http-request' , '>= 1.1.2'   ]  , 
-        'json'            =>  [ 'json'            , '>= 1.8.1'   ]  , 
-        'coerce'          =>  [ 'coerce'          , '>= 0.0.6'   ]  , 
-        'fukung'          =>  [ 'fukung'          , '>= 1.1.0'   ]  , 
-        'main'            =>  [ 'main'            , '>= 4.7.6'   ]  , 
-        'nokogiri'        =>  [ 'nokogiri'        , '>= 1.5.0'   ]  , 
-        'google-search'   =>  [ 'google-search'   , '>= 1.0.2'   ]  , 
-        'unidecode'       =>  [ 'unidecode'       , '>= 1.0.0'   ]  , 
-        'systemu'         =>  [ 'systemu'         , '>= 2.3.0'   ]  , 
-        'pry'             =>  [ 'pry'             , '>= 0.9.6.2' ]  , 
-        'mechanize'       =>  [ 'mechanize'       , '>= 2.7.3'   ]  , 
+        'flowdock'        =>  [ 'flowdock'        , '>= 0.4.0'   ]  ,
+        'eventmachine'    =>  [ 'eventmachine'    , '>= 1.0.3'   ]  ,
+        'em-http'         =>  [ 'em-http-request' , '>= 1.1.2'   ]  ,
+        'json'            =>  [ 'json'            , '>= 1.8.1'   ]  ,
+        'coerce'          =>  [ 'coerce'          , '>= 0.0.6'   ]  ,
+        'fukung'          =>  [ 'fukung'          , '>= 1.1.0'   ]  ,
+        'main'            =>  [ 'main'            , '>= 6.1.0'   ]  ,
+        'nokogiri'        =>  [ 'nokogiri'        , '>= 1.5.0'   ]  ,
+        'google-search'   =>  [ 'google-search'   , '>= 1.0.2'   ]  ,
+        'unidecode'       =>  [ 'unidecode'       , '>= 1.0.0'   ]  ,
+        'systemu'         =>  [ 'systemu'         , '>= 2.3.0'   ]  ,
+        'pry'             =>  [ 'pry'             , '>= 0.9.6.2' ]  ,
+        'mechanize'       =>  [ 'mechanize'       , '>= 2.7.3'   ]  ,
         'mime/types'      =>  [ 'mime-types'      , '>= 1.16'    ] 
       }
     end

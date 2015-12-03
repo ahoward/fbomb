@@ -28,13 +28,20 @@ Main {
       - builtin
   __
 
+  daemonizes!
 
   option('--force', '-f')
   option('--state=state', '-s')
 
+##
+#
   def before_run
-    if params[:state].given
-      path = File.expand_path(params[:state].values.first)
+    $cmd = [Util.which_ruby, File.expand_path(__FILE__), *ARGV].join(' ')
+
+    state = (ENV['STATE'] || params[:state].values.first).to_s.strip
+
+    unless state.empty? 
+      path = File.expand_path(state)
       dirname, basename = File.split(path)
 
       if dirname == '/'
@@ -47,12 +54,115 @@ Main {
     end
   end
 
-##
-#
   def run
+    STDOUT.sync = true
+    STDERR.sync = true
+
     load_commands!
     load_flow!
-    run_command! if argv.first =~ %r|^#{ Regexp.escape(FBomb.leader) }| unless argv.empty?
+    drop_fbombs!
+  end
+
+  def drop_fbombs!
+  #
+    at_exit{ @flow.leave }
+
+    # @flow.speak("fbomb (beta) in da house...")
+
+    trap('INT'){ exit }
+
+=begin
+{"event"=>"activity.user", "tags"=>[], "uuid"=>nil, "persist"=>false, "id"=>194342, "flow"=>"c6dbc029-2173-4fb6-a423-32293c373106", "content"=>{"last_activity"=>1399656686378}, "sent"=>1399657205286, "app"=>nil, "attachments"=>[], "user"=>"76002"}
+=end
+
+  #
+    $inactive = true
+    $active_at = Time.now
+
+    @monitor =
+      Thread.new do
+        Thread.current.abort_on_exception = true
+
+        loop do
+          sleep(60)
+
+          if($inactive and ((Time.now - $active_at).abs > 300))
+            Kernel.exec($cmd)
+          end
+        end
+      end
+
+  #
+    loop do
+      logging_errors do
+        @flow.stream do |flow|
+          begin
+            $inactive = false
+            $active_at = Time.now
+
+          #
+            next unless %w[ message comment ].include?(flow[:event])
+
+          #
+            content = flow[:content]
+
+            case content
+              when Hash
+                content = content[:text].to_s
+              else
+                content = content.to_s
+            end
+
+          #
+            tokens = content.scan(%r/[^\s]+/)
+            arg, *args = tokens
+
+          #
+            FBomb::Command.table.each do |key, command|
+              if command.matches?(content)
+                user = @flow.user_for(flow[:user])
+                FBomb::Command.user = user
+                begin
+                  logging_errors do
+                    logger.info("#{ key } =~ #{ content }")
+                    command.call(content)
+                  end
+                ensure
+                  FBomb::Command.user = nil
+                end
+              end
+            end
+
+          #
+            if arg =~ %r|^\s*#{ Regexp.escape(FBomb.leader) }|
+              key = arg.strip
+              command = FBomb::Command.table[key]
+
+              if command
+                user = @flow.user_for(flow[:user])
+                FBomb::Command.user = user
+                begin
+                  logging_errors do
+                    logger.info("#{ key } #{ args.join(' ') }")
+                    command.call(*args)
+                  end
+                ensure
+                  FBomb::Command.user = nil
+                end
+              end
+            else
+              if @flow.yelling?
+                @flow.yell(content)
+              end
+            end
+          ensure
+            $inactive = true
+          end
+       end
+
+        sleep(rand(42))
+      end
+    end
   end
 
   def load_commands!
@@ -152,35 +262,6 @@ Main {
 
 ##
 #
-  mode(:stop) do
-    def run
-      pid = IO.read(File.join(dotdir, 'pid')).to_i
-      10.times do
-        begin
-          Process.kill(-9, pid)
-        rescue
-          nil
-        end
-      end
-    end
-  end
-
-  mode(:pid) do
-    def run
-      pid = IO.read(File.join(dotdir, 'pid')).to_i
-      puts pid
-    rescue
-      nil
-    end
-  end
-
-  mode(:log) do
-    def run
-      log = IO.read(File.join(dotdir, 'log'))
-      exec "tail -F #{ log.inspect }"
-    end
-  end
-
   mode(:speak) do
     option('--tag=tag', '-t')
 
@@ -197,142 +278,11 @@ Main {
     end
   end
 
-  mode(:run) do
-    option('--daemon', '-d')
-
+  mode(:execute) do
     def run
-      $cmd = [Util.which_ruby, File.expand_path(__FILE__), *ARGV].join(' ')
-
-      if params['daemon'].given?
-        Dir.chdir(dotdir)
-
-        lock = File.join(dotdir, 'lock')
-        FileUtils.touch(lock)
-        open(lock, 'a+') do |fd|
-          fd.flock(File::LOCK_EX|File::LOCK_NB) or exit!(42)
-        end
-
-        exit! if fork
-        exit! if fork
-
-        open(File.join(dotdir, 'pid'), 'w'){|fd| fd.write($$)}
-
-        log = File.join(dotdir, 'log')
-        FileUtils.touch(log)
-
-        open(log, 'a+') do |fd|
-          fd.puts "process #{ $$ } started..."
-          STDOUT.reopen(fd)
-          STDERR.reopen(fd)
-        end
-      end
-
       load_commands!
       load_flow!
-      drop_fbombs!
-    end
-
-    def drop_fbombs!
-    #
-      at_exit{ @flow.leave }
-
-      # @flow.speak("fbomb (beta) in da house...")
-
-      trap('INT'){ exit }
-
-=begin
-{"event"=>"activity.user", "tags"=>[], "uuid"=>nil, "persist"=>false, "id"=>194342, "flow"=>"c6dbc029-2173-4fb6-a423-32293c373106", "content"=>{"last_activity"=>1399656686378}, "sent"=>1399657205286, "app"=>nil, "attachments"=>[], "user"=>"76002"}
-=end
-
-    #
-      $inactive = true
-      $active_at = Time.now
-
-      @monitor =
-        Thread.new do
-          Thread.current.abort_on_exception = true
-
-          loop do
-            sleep(60)
-
-            if($inactive and ((Time.now - $active_at).abs > 300))
-              p '$cmd' => $cmd
-              Kernel.exec($cmd)
-            end
-          end
-        end
-
-    #
-      loop do
-        logging_errors do
-          @flow.stream do |flow|
-            begin
-              $inactive = false
-              $active_at = Time.now
-
-            #
-              next unless %w[ message comment ].include?(flow[:event])
-
-            #
-              content = flow[:content]
-
-              case content
-                when Hash
-                  content = content[:text].to_s
-                else
-                  content = content.to_s
-              end
-
-            #
-              tokens = content.scan(%r/[^\s]+/)
-              arg, *args = tokens
-
-            #
-              FBomb::Command.table.each do |key, command|
-                if command.matches?(content)
-                  user = @flow.user_for(flow[:user])
-                  FBomb::Command.user = user
-                  begin
-                    logging_errors do
-                      logger.info("#{ key } =~ #{ content }")
-                      command.call(content)
-                    end
-                  ensure
-                    FBomb::Command.user = nil
-                  end
-                end
-              end
-
-            #
-              if arg =~ %r|^\s*#{ Regexp.escape(FBomb.leader) }|
-                key = arg.strip
-                command = FBomb::Command.table[key]
-
-                if command
-                  user = @flow.user_for(flow[:user])
-                  FBomb::Command.user = user
-                  begin
-                    logging_errors do
-                      logger.info("#{ key } #{ args.join(' ') }")
-                      command.call(*args)
-                    end
-                  ensure
-                    FBomb::Command.user = nil
-                  end
-                end
-              else
-                if @flow.yelling?
-                  @flow.yell(content)
-                end
-              end
-            ensure
-              $inactive = true
-            end
-         end
-
-          sleep(rand(42))
-        end
-      end
+      run_command! if argv.first =~ %r|^#{ Regexp.escape(FBomb.leader) }| unless argv.empty?
     end
   end
 

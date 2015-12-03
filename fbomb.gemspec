@@ -3,7 +3,7 @@
 
 Gem::Specification::new do |spec|
   spec.name = "fbomb"
-  spec.version = "3.2.0"
+  spec.version = "4.0.0"
   spec.platform = Gem::Platform::RUBY
   spec.summary = "fbomb"
   spec.description = "description: fbomb kicks the ass"
@@ -96,7 +96,7 @@ Gem::Specification::new do |spec|
   
     spec.add_dependency(*["fukung", ">= 1.1.0"])
   
-    spec.add_dependency(*["main", ">= 4.7.6"])
+    spec.add_dependency(*["main", ">= 6.1.0"])
   
     spec.add_dependency(*["nokogiri", ">= 1.5.0"])
   
