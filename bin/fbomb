@@ -177,7 +177,7 @@ Main {
       $cmd = [Util.which_ruby, File.expand_path(__FILE__), *ARGV].join(' ')
 
       if params['daemon'].given?
-        DATA.flock(File::LOCK_EX|File::LOCK_NB) or exit!(42)
+        #DATA.flock(File::LOCK_EX|File::LOCK_NB) or exit!(42)
         Dir.chdir('/tmp')
         exit! if fork
         exit! if fork
