@@ -3,7 +3,7 @@
 
 Gem::Specification::new do |spec|
   spec.name = "fbomb"
-  spec.version = "2.1.0"
+  spec.version = "3.0.0"
   spec.platform = Gem::Platform::RUBY
   spec.summary = "fbomb"
   spec.description = "description: fbomb kicks the ass"
@@ -14,7 +14,6 @@ Gem::Specification::new do |spec|
  "Gemfile.lock",
  "README.md",
  "Rakefile",
- "a.patch",
  "bin",
  "bin/fbomb",
  "fbomb.gemspec",
