@@ -30,6 +30,22 @@ Main {
 
 
   option('--force', '-f')
+  option('--state=state', '-s')
+
+  def before_run
+    if params[:state].given
+      path = File.expand_path(params[:state].values.first)
+      dirname, basename = File.split(path)
+
+      if dirname == '/'
+        dirname = path
+        basename = '.fbomb'
+      end
+
+      ENV['STATE_DIRNAME'] = dirname
+      ENV['STATE_BASENAME'] = basename
+    end
+  end
 
 ##
 #
@@ -139,9 +155,13 @@ Main {
   mode(:stop) do
     def run
       pid = IO.read(File.join(dotdir, 'pid')).to_i
-      Process.kill(-9, pid)
-    rescue
-      nil
+      10.times do
+        begin
+          Process.kill(-9, pid)
+        rescue
+          nil
+        end
+      end
     end
   end
 
@@ -151,6 +171,13 @@ Main {
       puts pid
     rescue
       nil
+    end
+  end
+
+  mode(:log) do
+    def run
+      log = IO.read(File.join(dotdir, 'log'))
+      exec "tail -F #{ log.inspect }"
     end
   end
 
@@ -177,12 +204,24 @@ Main {
       $cmd = [Util.which_ruby, File.expand_path(__FILE__), *ARGV].join(' ')
 
       if params['daemon'].given?
-        #DATA.flock(File::LOCK_EX|File::LOCK_NB) or exit!(42)
-        Dir.chdir('/tmp')
+        Dir.chdir(dotdir)
+
+        lock = File.join(dotdir, 'lock')
+        FileUtils.touch(lock)
+        open(lock, 'a+') do |fd|
+          fd.flock(File::LOCK_EX|File::LOCK_NB) or exit!(42)
+        end
+
         exit! if fork
         exit! if fork
+
         open(File.join(dotdir, 'pid'), 'w'){|fd| fd.write($$)}
-        open('/dev/null', 'w+') do |fd|
+
+        log = File.join(dotdir, 'log')
+        FileUtils.touch(log)
+
+        open(log, 'a+') do |fd|
+          fd.puts "process #{ $$ } started..."
           STDOUT.reopen(fd)
           STDERR.reopen(fd)
         end

@@ -13,7 +13,7 @@
 # libs
 #
   module FBomb
-    Version = '3.1.0' unless defined?(Version)
+    Version = '3.2.0' unless defined?(Version)
 
     def version
       FBomb::Version
