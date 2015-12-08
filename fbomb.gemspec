@@ -3,7 +3,7 @@
 
 Gem::Specification::new do |spec|
   spec.name = "fbomb"
-  spec.version = "4.0.0"
+  spec.version = "4.1.0"
   spec.platform = Gem::Platform::RUBY
   spec.summary = "fbomb"
   spec.description = "description: fbomb kicks the ass"

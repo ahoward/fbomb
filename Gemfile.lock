@@ -36,12 +36,12 @@ GEM
     json (1.8.1)
     launchy (2.4.2)
       addressable (~> 2.3)
-    main (6.0.0)
+    main (6.2.0)
       arrayfields (>= 4.7.4)
       chronic (>= 0.6.2)
       fattr (>= 2.2.0)
-      map (>= 5.1.0)
-    map (6.5.3)
+      map (>= 6.1.0)
+    map (6.5.5)
     mechanize (2.7.3)
       domain_name (~> 0.5, >= 0.5.1)
       http-cookie (~> 1.0)
@@ -91,3 +91,6 @@ DEPENDENCIES
   pry (>= 0.9.6.2)
   systemu (>= 2.3.0)
   unidecode (>= 1.0.0)
+
+BUNDLED WITH
+   1.10.6
