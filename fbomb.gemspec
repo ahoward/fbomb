@@ -84,33 +84,33 @@ Gem::Specification::new do |spec|
   spec.test_files = nil
 
   
-    spec.add_dependency(*["flowdock", ">= 0.4.0"])
+    spec.add_dependency(*["flowdock", "~> 0.4"])
   
-    spec.add_dependency(*["eventmachine", ">= 1.0.3"])
+    spec.add_dependency(*["eventmachine", "~> 1.0"])
   
-    spec.add_dependency(*["em-http-request", ">= 1.1.2"])
+    spec.add_dependency(*["em-http-request", "~> 1.1"])
   
-    spec.add_dependency(*["json", ">= 1.8.1"])
+    spec.add_dependency(*["json", "~> 2.0"])
   
-    spec.add_dependency(*["coerce", ">= 0.0.6"])
+    spec.add_dependency(*["coerce", "~> 0.0"])
   
-    spec.add_dependency(*["fukung", ">= 1.1.0"])
+    spec.add_dependency(*["fukung", "~> 2.0"])
   
-    spec.add_dependency(*["main", ">= 6.1.0"])
+    spec.add_dependency(*["main", "~> 6.1"])
   
-    spec.add_dependency(*["nokogiri", ">= 1.5.0"])
+    spec.add_dependency(*["nokogiri", "~> 1.5"])
   
-    spec.add_dependency(*["google-search", ">= 1.0.2"])
+    spec.add_dependency(*["google-search", "~> 1.0"])
   
-    spec.add_dependency(*["unidecode", ">= 1.0.0"])
+    spec.add_dependency(*["unidecode", "~> 1.0"])
   
-    spec.add_dependency(*["systemu", ">= 2.3.0"])
+    spec.add_dependency(*["systemu", "~> 2.3"])
   
-    spec.add_dependency(*["pry", ">= 0.9.6.2"])
+    spec.add_dependency(*["pry", "~> 0.9"])
   
-    spec.add_dependency(*["mechanize", ">= 2.7.3"])
+    spec.add_dependency(*["mechanize", "~> 2.7"])
   
-    spec.add_dependency(*["mime-types", ">= 1.16"])
+    spec.add_dependency(*["mime-types", "~> 3.1"])
   
 
   spec.extensions.push(*[])

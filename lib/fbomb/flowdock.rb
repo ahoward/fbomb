@@ -59,6 +59,7 @@ module FBomb
 
     class Flow < Object
       fattr(:yelling){ false }
+      fattr(:current){ }
 
       def yell(*args)
         string = args.join(' ')

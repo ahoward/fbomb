@@ -96,6 +96,8 @@ Main {
     loop do
       logging_errors do
         @flow.stream do |flow|
+          @flow.current = flow
+
           begin
             $inactive = false
             $active_at = Time.now
@@ -135,7 +137,12 @@ Main {
 
           #
             if arg =~ %r|^\s*#{ Regexp.escape(FBomb.leader) }|
-              key = arg.strip
+              if arg.strip == FBomb.leader
+                key = "#{ FBomb.leader }#{ args.shift }"
+              else
+                key = arg.strip
+              end
+
               command = FBomb::Command.table[key]
 
               if command
