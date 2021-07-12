@@ -1,7 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.3.6)
+    addressable (2.8.0)
+      public_suffix (>= 2.0.2, < 5.0)
     arrayfields (4.9.2)
     chronic (0.10.2)
     coderay (1.1.0)
@@ -65,6 +66,7 @@ GEM
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
+    public_suffix (4.0.6)
     slop (3.5.0)
     systemu (2.6.4)
     unf (0.1.4)
